@@ -1,0 +1,26 @@
+version: 2
+enable-beta-ecosystems: true
+
+updates:
+    - package-ecosystem: "github-actions"
+      directory: "/"
+      schedule:
+          interval: "daily"
+
+    - package-ecosystem: "cargo"
+      directory: "/"
+      schedule:
+          interval: "daily"
+      versioning-strategy: lockfile-only
+
+    - package-ecosystem: "cargo"
+      directory: "/examples/egui_demo_app"
+      schedule:
+          interval: "daily"
+      versioning-strategy: lockfile-only
+
+    - package-ecosystem: "cargo"
+      directory: "/examples/egui_demo_lib"
+      schedule:
+          interval: "daily"
+      versioning-strategy: lockfile-only
