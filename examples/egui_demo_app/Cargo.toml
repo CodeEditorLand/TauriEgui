@@ -13,35 +13,27 @@ all-features = true
 
 [lib]
 crate-type = ["cdylib", "rlib"]
-
+path = "Source/lib.rs"
 
 [features]
 default = ["glow", "persistence"]
 
 http = ["ehttp", "image", "poll-promise", "egui_extras/image"]
-persistence = [
-    "eframe/persistence",
-    "egui/persistence",
-    "serde",
-]
-screen_reader = ["eframe/screen_reader"] # experimental
-serde = [
-    "dep:serde",
-    "egui_demo_lib/serde",
-    "egui_extras/serde",
-    "egui/serde",
-]
+persistence = ["eframe/persistence", "egui/persistence", "serde"]
+screen_reader = ["eframe/screen_reader"]                                        # experimental
+serde = ["dep:serde", "egui_demo_lib/serde", "egui_extras/serde", "egui/serde"]
 syntax_highlighting = ["egui_demo_lib/syntax_highlighting"]
 
 glow = ["eframe/glow"]
 wgpu = ["eframe/wgpu", "bytemuck", "pollster", "dep:wgpu"]
 
-
 [dependencies]
 chrono = { version = "0.4", features = ["js-sys", "wasmbind"] }
 eframe = { package = "eframe_tao", version = "0.22.0", default-features = false }
 egui = { version = "0.19.0", features = ["extra_debug_asserts"] }
-egui_demo_lib = { version = "0.19.0", path = "../egui_demo_lib", features = ["chrono"] }
+egui_demo_lib = { version = "0.19.0", path = "../egui_demo_lib", features = [
+	"chrono",
+] }
 
 # Optional dependencies:
 
@@ -52,15 +44,14 @@ wgpu = { version = "0.13", optional = true, features = ["webgl"] }
 # feature "http":
 ehttp = { version = "0.2.0", optional = true }
 image = { version = "0.24", optional = true, default-features = false, features = [
-  "jpeg",
-  "png",
+	"jpeg",
+	"png",
 ] }
 poll-promise = { version = "0.1", optional = true, default-features = false }
 pollster = { version = "0.2.5", optional = true }
 
 # feature "persistence":
 serde = { version = "1", optional = true, features = ["derive"] }
-
 
 # native:
 [target.'cfg(not(target_arch = "wasm32"))'.dependencies]
