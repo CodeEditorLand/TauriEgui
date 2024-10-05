@@ -4,13 +4,12 @@
 
 use std::sync::mpsc::sync_channel;
 
+pub use eframe;
+pub use egui;
 use glutin::{ContextError, CreationError};
 use tauri::{AppHandle, Manager, Runtime};
 use tauri_runtime::UserEvent;
 use tauri_runtime_wry::{Context, PluginBuilder};
-
-pub use eframe;
-pub use egui;
 
 mod plugin;
 use plugin::EguiPlugin;
@@ -30,28 +29,28 @@ pub enum Error {
 
 pub type Result<T> = std::result::Result<T, Error>;
 
-pub struct EguiPluginBuilder<R: Runtime> {
-	app: AppHandle<R>,
+pub struct EguiPluginBuilder<R:Runtime> {
+	app:AppHandle<R>,
 }
 
-impl<R: Runtime> EguiPluginBuilder<R> {
-	pub fn new(app: AppHandle<R>) -> Self {
-		Self { app }
-	}
+impl<R:Runtime> EguiPluginBuilder<R> {
+	pub fn new(app:AppHandle<R>) -> Self { Self { app } }
 }
 
-impl<T: UserEvent, R: Runtime> PluginBuilder<T> for EguiPluginBuilder<R> {
+impl<T:UserEvent, R:Runtime> PluginBuilder<T> for EguiPluginBuilder<R> {
 	type Plugin = EguiPlugin<T>;
 
-	fn build(self, context: Context<T>) -> Self::Plugin {
+	fn build(self, context:Context<T>) -> Self::Plugin {
 		let plugin = EguiPlugin {
-			context: plugin::Context {
-				inner: context,
-				main_thread: plugin::MainThreadContext { windows: Default::default() },
-				webview_id_map: Default::default(),
+			context:plugin::Context {
+				inner:context,
+				main_thread:plugin::MainThreadContext {
+					windows:Default::default(),
+				},
+				webview_id_map:Default::default(),
 			},
-			create_window_channel: sync_channel(1),
-			is_focused: false,
+			create_window_channel:sync_channel(1),
+			is_focused:false,
 		};
 		self.app.manage(plugin.handle());
 		plugin

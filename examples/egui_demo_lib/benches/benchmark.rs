@@ -1,9 +1,8 @@
 use criterion::{criterion_group, criterion_main, Criterion};
-
 use egui::epaint::TextShape;
 use egui_demo_lib::LOREM_IPSUM_LONG;
 
-pub fn criterion_benchmark(c: &mut Criterion) {
+pub fn criterion_benchmark(c:&mut Criterion) {
 	use egui::RawInput;
 
 	{
@@ -60,7 +59,10 @@ pub fn criterion_benchmark(c: &mut Criterion) {
 				});
 				c.bench_function("label format!", |b| {
 					b.iter(|| {
-						ui.label("the quick brown fox jumps over the lazy dog".to_owned());
+						ui.label(
+							"the quick brown fox jumps over the lazy dog"
+								.to_owned(),
+						);
 					});
 				});
 			});
@@ -76,7 +78,12 @@ pub fn criterion_benchmark(c: &mut Criterion) {
 				let painter = ui.painter();
 				let rect = ui.max_rect();
 				b.iter(|| {
-					painter.rect(rect, 2.0, egui::Color32::RED, (1.0, egui::Color32::WHITE));
+					painter.rect(
+						rect,
+						2.0,
+						egui::Color32::RED,
+						(1.0, egui::Color32::WHITE),
+					);
 				});
 			});
 		});
@@ -113,11 +120,21 @@ pub fn criterion_benchmark(c: &mut Criterion) {
 		}
 		c.bench_function("text_layout_cached", |b| {
 			b.iter(|| {
-				fonts.layout(LOREM_IPSUM_LONG.to_owned(), font_id.clone(), color, wrap_width)
+				fonts.layout(
+					LOREM_IPSUM_LONG.to_owned(),
+					font_id.clone(),
+					color,
+					wrap_width,
+				)
 			});
 		});
 
-		let galley = fonts.layout(LOREM_IPSUM_LONG.to_owned(), font_id, color, wrap_width);
+		let galley = fonts.layout(
+			LOREM_IPSUM_LONG.to_owned(),
+			font_id,
+			color,
+			wrap_width,
+		);
 		let font_image_size = fonts.font_image_size();
 		let prepared_discs = fonts.texture_atlas().lock().prepared_discs();
 		let mut tessellator = egui::epaint::Tessellator::new(

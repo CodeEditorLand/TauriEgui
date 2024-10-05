@@ -10,7 +10,8 @@ This crate contains example code for [`egui`](https://github.com/emilk/egui).
 
 The demo library is a separate crate for three reasons:
 
-* To ensure it only uses the public `egui` api.
-* To remove the amount of code in `egui` proper.
-* To make it easy for 3rd party egui integrations to use it for tests.
-  - See for instance https://github.com/not-fl3/egui-miniquad/blob/master/examples/demo.rs
+-   To ensure it only uses the public `egui` api.
+-   To remove the amount of code in `egui` proper.
+-   To make it easy for 3rd party egui integrations to use it for tests.
+    -   See for instance
+        https://github.com/not-fl3/egui-miniquad/blob/master/examples/demo.rs
