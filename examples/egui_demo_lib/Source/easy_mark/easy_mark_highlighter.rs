@@ -5,13 +5,13 @@ use crate::easy_mark::easy_mark_parser;
 /// In practice, the highlighter is fast enough not to need any caching.
 #[derive(Default)]
 pub struct MemoizedEasymarkHighlighter {
-	style: egui::Style,
-	code: String,
-	output: egui::text::LayoutJob,
+	style:egui::Style,
+	code:String,
+	output:egui::text::LayoutJob,
 }
 
 impl MemoizedEasymarkHighlighter {
-	pub fn highlight(&mut self, egui_style: &egui::Style, code: &str) -> egui::text::LayoutJob {
+	pub fn highlight(&mut self, egui_style:&egui::Style, code:&str) -> egui::text::LayoutJob {
 		if (&self.style, self.code.as_str()) != (egui_style, code) {
 			self.style = egui_style.clone();
 			self.code = code.to_owned();
@@ -21,7 +21,7 @@ impl MemoizedEasymarkHighlighter {
 	}
 }
 
-pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::text::LayoutJob {
+pub fn highlight_easymark(egui_style:&egui::Style, mut text:&str) -> egui::text::LayoutJob {
 	let mut job = egui::text::LayoutJob::default();
 	let mut style = easy_mark_parser::Style::default();
 	let mut start_of_line = true;
@@ -34,7 +34,7 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
 				0.0,
 				format_from_style(
 					egui_style,
-					&easy_mark_parser::Style { code: true, ..Default::default() },
+					&easy_mark_parser::Style { code:true, ..Default::default() },
 				),
 			);
 			text = &text[end..];
@@ -98,7 +98,8 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
 		} else {
 			skip = 0;
 		}
-		// Note: we don't preview underline, strikethrough and italics because it confuses things.
+		// Note: we don't preview underline, strikethrough and italics because it
+		// confuses things.
 
 		// Swallow everything up to the next special character:
 		let line_end = text[skip..].find('\n').map_or_else(|| text.len(), |i| (skip + i + 1));
@@ -122,8 +123,8 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
 }
 
 fn format_from_style(
-	egui_style: &egui::Style,
-	emark_style: &easy_mark_parser::Style,
+	egui_style:&egui::Style,
+	emark_style:&easy_mark_parser::Style,
 ) -> egui::text::TextFormat {
 	use egui::{Align, Color32, Stroke, TextStyle};
 
@@ -145,8 +146,11 @@ fn format_from_style(
 		TextStyle::Body
 	};
 
-	let background =
-		if emark_style.code { egui_style.visuals.code_bg_color } else { Color32::TRANSPARENT };
+	let background = if emark_style.code {
+		egui_style.visuals.code_bg_color
+	} else {
+		Color32::TRANSPARENT
+	};
 
 	let underline = if emark_style.underline { Stroke::new(1.0, color) } else { Stroke::none() };
 
@@ -156,10 +160,10 @@ fn format_from_style(
 	let valign = if emark_style.raised { Align::TOP } else { Align::BOTTOM };
 
 	egui::text::TextFormat {
-		font_id: text_style.resolve(egui_style),
+		font_id:text_style.resolve(egui_style),
 		color,
 		background,
-		italics: emark_style.italics,
+		italics:emark_style.italics,
 		underline,
 		strikethrough,
 		valign,

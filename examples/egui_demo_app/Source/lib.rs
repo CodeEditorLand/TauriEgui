@@ -56,16 +56,11 @@ pub fn init_wasm_hooks() {
 
 #[cfg(target_arch = "wasm32")]
 #[wasm_bindgen]
-pub fn start_separate(
-	canvas_id:&str,
-) -> Result<WebHandle, wasm_bindgen::JsValue> {
+pub fn start_separate(canvas_id:&str) -> Result<WebHandle, wasm_bindgen::JsValue> {
 	let web_options = eframe::WebOptions::default();
-	let handle = eframe::start_web(
-		canvas_id,
-		web_options,
-		Box::new(|cc| Box::new(WrapApp::new(cc))),
-	)
-	.map(|handle| WebHandle { handle });
+	let handle =
+		eframe::start_web(canvas_id, web_options, Box::new(|cc| Box::new(WrapApp::new(cc))))
+			.map(|handle| WebHandle { handle });
 
 	handle
 }

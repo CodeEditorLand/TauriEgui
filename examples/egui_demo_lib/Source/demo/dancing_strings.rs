@@ -6,11 +6,9 @@ use egui::{containers::*, *};
 pub struct DancingStrings {}
 
 impl super::Demo for DancingStrings {
-	fn name(&self) -> &'static str {
-		"♫ Dancing Strings"
-	}
+	fn name(&self) -> &'static str { "♫ Dancing Strings" }
 
-	fn show(&mut self, ctx: &Context, open: &mut bool) {
+	fn show(&mut self, ctx:&Context, open:&mut bool) {
 		use super::View as _;
 		Window::new(self.name())
 			.open(open)
@@ -21,7 +19,7 @@ impl super::Demo for DancingStrings {
 }
 
 impl super::View for DancingStrings {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		let color = if ui.visuals().dark_mode {
 			Color32::from_additive_luminance(196)
 		} else {
@@ -45,7 +43,7 @@ impl super::View for DancingStrings {
 				let n = 120;
 				let speed = 1.5;
 
-				let points: Vec<Pos2> = (0..=n)
+				let points:Vec<Pos2> = (0..=n)
 					.map(|i| {
 						let t = i as f64 / (n as f64);
 						let amp = (time * speed * mode).sin() / mode;

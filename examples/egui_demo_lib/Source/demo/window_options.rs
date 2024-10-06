@@ -1,42 +1,40 @@
 #[derive(Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub struct WindowOptions {
-	title: String,
-	title_bar: bool,
-	closable: bool,
-	collapsible: bool,
-	resizable: bool,
-	scroll2: [bool; 2],
-	disabled_time: f64,
+	title:String,
+	title_bar:bool,
+	closable:bool,
+	collapsible:bool,
+	resizable:bool,
+	scroll2:[bool; 2],
+	disabled_time:f64,
 
-	anchored: bool,
-	anchor: egui::Align2,
-	anchor_offset: egui::Vec2,
+	anchored:bool,
+	anchor:egui::Align2,
+	anchor_offset:egui::Vec2,
 }
 
 impl Default for WindowOptions {
 	fn default() -> Self {
 		Self {
-			title: "🗖 Window Options".to_owned(),
-			title_bar: true,
-			closable: true,
-			collapsible: true,
-			resizable: true,
-			scroll2: [true; 2],
-			disabled_time: f64::NEG_INFINITY,
-			anchored: false,
-			anchor: egui::Align2::RIGHT_TOP,
-			anchor_offset: egui::Vec2::ZERO,
+			title:"🗖 Window Options".to_owned(),
+			title_bar:true,
+			closable:true,
+			collapsible:true,
+			resizable:true,
+			scroll2:[true; 2],
+			disabled_time:f64::NEG_INFINITY,
+			anchored:false,
+			anchor:egui::Align2::RIGHT_TOP,
+			anchor_offset:egui::Vec2::ZERO,
 		}
 	}
 }
 
 impl super::Demo for WindowOptions {
-	fn name(&self) -> &'static str {
-		"🗖 Window Options"
-	}
+	fn name(&self) -> &'static str { "🗖 Window Options" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		let Self {
 			title,
 			title_bar,
@@ -74,7 +72,7 @@ impl super::Demo for WindowOptions {
 }
 
 impl super::View for WindowOptions {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		let Self {
 			title,
 			title_bar,

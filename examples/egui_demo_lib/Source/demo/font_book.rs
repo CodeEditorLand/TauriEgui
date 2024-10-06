@@ -1,27 +1,25 @@
 use std::collections::BTreeMap;
 
 pub struct FontBook {
-	filter: String,
-	font_id: egui::FontId,
-	named_chars: BTreeMap<egui::FontFamily, BTreeMap<char, String>>,
+	filter:String,
+	font_id:egui::FontId,
+	named_chars:BTreeMap<egui::FontFamily, BTreeMap<char, String>>,
 }
 
 impl Default for FontBook {
 	fn default() -> Self {
 		Self {
-			filter: Default::default(),
-			font_id: egui::FontId::proportional(20.0),
-			named_chars: Default::default(),
+			filter:Default::default(),
+			font_id:egui::FontId::proportional(20.0),
+			named_chars:Default::default(),
 		}
 	}
 }
 
 impl super::Demo for FontBook {
-	fn name(&self) -> &'static str {
-		"🔤 Font Book"
-	}
+	fn name(&self) -> &'static str { "🔤 Font Book" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		egui::Window::new(self.name()).open(open).show(ctx, |ui| {
 			use super::View as _;
 			self.ui(ui);
@@ -30,14 +28,17 @@ impl super::Demo for FontBook {
 }
 
 impl super::View for FontBook {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		ui.vertical_centered(|ui| {
 			ui.add(crate::egui_github_link_file!());
 		});
 
 		ui.label(format!(
 			"The selected font supports {} characters.",
-			self.named_chars.get(&self.font_id.family).map(|map| map.len()).unwrap_or_default()
+			self.named_chars
+				.get(&self.font_id.family)
+				.map(|map| map.len())
+				.unwrap_or_default()
 		));
 
 		ui.horizontal_wrapped(|ui| {
@@ -82,7 +83,7 @@ impl super::View for FontBook {
 						)
 						.frame(false);
 
-						let tooltip_ui = |ui: &mut egui::Ui| {
+						let tooltip_ui = |ui:&mut egui::Ui| {
 							ui.label(
 								egui::RichText::new(chr.to_string()).font(self.font_id.clone()),
 							);
@@ -99,7 +100,7 @@ impl super::View for FontBook {
 	}
 }
 
-fn available_characters(ui: &egui::Ui, family: egui::FontFamily) -> BTreeMap<char, String> {
+fn available_characters(ui:&egui::Ui, family:egui::FontFamily) -> BTreeMap<char, String> {
 	ui.fonts()
     .lock()
     .fonts
@@ -111,14 +112,14 @@ fn available_characters(ui: &egui::Ui, family: egui::FontFamily) -> BTreeMap<cha
     .collect()
 }
 
-fn char_name(chr: char) -> String {
+fn char_name(chr:char) -> String {
 	special_char_name(chr)
 		.map(|s| s.to_owned())
 		.or_else(|| unicode_names2::name(chr).map(|name| name.to_string().to_lowercase()))
 		.unwrap_or_else(|| "unknown".to_owned())
 }
 
-fn special_char_name(chr: char) -> Option<&'static str> {
+fn special_char_name(chr:char) -> Option<&'static str> {
 	#[allow(clippy::match_same_arms)] // many "flag"
 	match chr {
 		// Special private-use-area extensions found in `emoji-icon-font.ttf`:

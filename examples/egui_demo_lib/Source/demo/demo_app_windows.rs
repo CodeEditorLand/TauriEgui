@@ -1,5 +1,6 @@
-use egui::{Context, ScrollArea, Ui};
 use std::collections::BTreeSet;
+
+use egui::{Context, ScrollArea, Ui};
 
 use super::{About, Demo, View};
 use crate::is_mobile;
@@ -10,9 +11,9 @@ use crate::is_mobile;
 #[cfg_attr(feature = "serde", serde(default))]
 struct Demos {
 	#[cfg_attr(feature = "serde", serde(skip))]
-	demos: Vec<Box<dyn Demo>>,
+	demos:Vec<Box<dyn Demo>>,
 
-	open: BTreeSet<String>,
+	open:BTreeSet<String>,
 }
 
 impl Default for Demos {
@@ -43,14 +44,14 @@ impl Default for Demos {
 }
 
 impl Demos {
-	pub fn from_demos(demos: Vec<Box<dyn Demo>>) -> Self {
+	pub fn from_demos(demos:Vec<Box<dyn Demo>>) -> Self {
 		let mut open = BTreeSet::new();
 		open.insert(super::widget_gallery::WidgetGallery::default().name().to_owned());
 
 		Self { demos, open }
 	}
 
-	pub fn checkboxes(&mut self, ui: &mut Ui) {
+	pub fn checkboxes(&mut self, ui:&mut Ui) {
 		let Self { demos, open } = self;
 		for demo in demos {
 			let mut is_open = open.contains(demo.name());
@@ -59,7 +60,7 @@ impl Demos {
 		}
 	}
 
-	pub fn windows(&mut self, ctx: &Context) {
+	pub fn windows(&mut self, ctx:&Context) {
 		let Self { demos, open } = self;
 		for demo in demos {
 			let mut is_open = open.contains(demo.name());
@@ -75,9 +76,9 @@ impl Demos {
 #[cfg_attr(feature = "serde", serde(default))]
 struct Tests {
 	#[cfg_attr(feature = "serde", serde(skip))]
-	demos: Vec<Box<dyn Demo>>,
+	demos:Vec<Box<dyn Demo>>,
 
-	open: BTreeSet<String>,
+	open:BTreeSet<String>,
 }
 
 impl Default for Tests {
@@ -94,14 +95,14 @@ impl Default for Tests {
 }
 
 impl Tests {
-	pub fn from_demos(demos: Vec<Box<dyn Demo>>) -> Self {
+	pub fn from_demos(demos:Vec<Box<dyn Demo>>) -> Self {
 		let mut open = BTreeSet::new();
 		open.insert(super::widget_gallery::WidgetGallery::default().name().to_owned());
 
 		Self { demos, open }
 	}
 
-	pub fn checkboxes(&mut self, ui: &mut Ui) {
+	pub fn checkboxes(&mut self, ui:&mut Ui) {
 		let Self { demos, open } = self;
 		for demo in demos {
 			let mut is_open = open.contains(demo.name());
@@ -110,7 +111,7 @@ impl Tests {
 		}
 	}
 
-	pub fn windows(&mut self, ctx: &Context) {
+	pub fn windows(&mut self, ctx:&Context) {
 		let Self { demos, open } = self;
 		for demo in demos {
 			let mut is_open = open.contains(demo.name());
@@ -122,7 +123,7 @@ impl Tests {
 
 // ----------------------------------------------------------------------------
 
-fn set_open(open: &mut BTreeSet<String>, key: &'static str, is_open: bool) {
+fn set_open(open:&mut BTreeSet<String>, key:&'static str, is_open:bool) {
 	if is_open {
 		if !open.contains(key) {
 			open.insert(key.to_owned());
@@ -138,26 +139,26 @@ fn set_open(open: &mut BTreeSet<String>, key: &'static str, is_open: bool) {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct DemoWindows {
-	about_is_open: bool,
-	about: About,
-	demos: Demos,
-	tests: Tests,
+	about_is_open:bool,
+	about:About,
+	demos:Demos,
+	tests:Tests,
 }
 
 impl Default for DemoWindows {
 	fn default() -> Self {
 		Self {
-			about_is_open: true,
-			about: Default::default(),
-			demos: Default::default(),
-			tests: Default::default(),
+			about_is_open:true,
+			about:Default::default(),
+			demos:Default::default(),
+			tests:Default::default(),
 		}
 	}
 }
 
 impl DemoWindows {
 	/// Show the app ui (menu bar and windows).
-	pub fn ui(&mut self, ctx: &Context) {
+	pub fn ui(&mut self, ctx:&Context) {
 		if is_mobile(ctx) {
 			self.mobile_ui(ctx);
 		} else {
@@ -165,7 +166,7 @@ impl DemoWindows {
 		}
 	}
 
-	fn mobile_ui(&mut self, ctx: &Context) {
+	fn mobile_ui(&mut self, ctx:&Context) {
 		if self.about_is_open {
 			let screen_size = ctx.input().screen_rect.size();
 			let default_width = (screen_size.x - 20.0).min(400.0);
@@ -198,7 +199,7 @@ impl DemoWindows {
 		}
 	}
 
-	fn mobile_top_bar(&mut self, ctx: &Context) {
+	fn mobile_top_bar(&mut self, ctx:&Context) {
 		egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
 			egui::menu::bar(ui, |ui| {
 				let font_size = 20.0;
@@ -226,10 +227,11 @@ impl DemoWindows {
 		});
 	}
 
-	fn desktop_ui(&mut self, ctx: &Context) {
-		egui::SidePanel::right("egui_demo_panel").resizable(false).default_width(145.0).show(
-			ctx,
-			|ui| {
+	fn desktop_ui(&mut self, ctx:&Context) {
+		egui::SidePanel::right("egui_demo_panel")
+			.resizable(false)
+			.default_width(145.0)
+			.show(ctx, |ui| {
 				egui::trace!(ui);
 				ui.vertical_centered(|ui| {
 					ui.heading("✒ egui demos");
@@ -250,8 +252,7 @@ impl DemoWindows {
 				ui.separator();
 
 				self.demo_list_ui(ui);
-			},
-		);
+			});
 
 		egui::TopBottomPanel::top("menu_bar").show(ctx, |ui| {
 			egui::menu::bar(ui, |ui| {
@@ -263,13 +264,13 @@ impl DemoWindows {
 	}
 
 	/// Show the open windows.
-	fn show_windows(&mut self, ctx: &Context) {
+	fn show_windows(&mut self, ctx:&Context) {
 		self.about.show(ctx, &mut self.about_is_open);
 		self.demos.windows(ctx);
 		self.tests.windows(ctx);
 	}
 
-	fn demo_list_ui(&mut self, ui: &mut egui::Ui) {
+	fn demo_list_ui(&mut self, ui:&mut egui::Ui) {
 		ScrollArea::vertical().show(ui, |ui| {
 			ui.with_layout(egui::Layout::top_down_justified(egui::Align::LEFT), |ui| {
 				ui.toggle_value(&mut self.about_is_open, self.about.name());
@@ -290,7 +291,7 @@ impl DemoWindows {
 
 // ----------------------------------------------------------------------------
 
-fn file_menu_button(ui: &mut Ui) {
+fn file_menu_button(ui:&mut Ui) {
 	ui.menu_button("File", |ui| {
 		if ui.button("Organize windows").clicked() {
 			ui.ctx().memory().reset_areas();

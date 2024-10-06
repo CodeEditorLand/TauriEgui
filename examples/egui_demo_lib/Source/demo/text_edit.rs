@@ -3,21 +3,17 @@
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct TextEdit {
-	pub text: String,
+	pub text:String,
 }
 
 impl Default for TextEdit {
-	fn default() -> Self {
-		Self { text: "Edit this text".to_owned() }
-	}
+	fn default() -> Self { Self { text:"Edit this text".to_owned() } }
 }
 
 impl super::Demo for TextEdit {
-	fn name(&self) -> &'static str {
-		"🖹 TextEdit"
-	}
+	fn name(&self) -> &'static str { "🖹 TextEdit" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		egui::Window::new(self.name()).open(open).resizable(false).show(ctx, |ui| {
 			use super::View as _;
 			self.ui(ui);
@@ -26,7 +22,7 @@ impl super::Demo for TextEdit {
 }
 
 impl super::View for TextEdit {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		let Self { text } = self;
 
 		ui.horizontal(|ui| {

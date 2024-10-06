@@ -1,46 +1,45 @@
-use egui::*;
 use std::f64::INFINITY;
+
+use egui::*;
 
 /// Showcase sliders
 #[derive(PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct Sliders {
-	pub min: f64,
-	pub max: f64,
-	pub logarithmic: bool,
-	pub clamp_to_range: bool,
-	pub smart_aim: bool,
-	pub step: f64,
-	pub use_steps: bool,
-	pub integer: bool,
-	pub vertical: bool,
-	pub value: f64,
+	pub min:f64,
+	pub max:f64,
+	pub logarithmic:bool,
+	pub clamp_to_range:bool,
+	pub smart_aim:bool,
+	pub step:f64,
+	pub use_steps:bool,
+	pub integer:bool,
+	pub vertical:bool,
+	pub value:f64,
 }
 
 impl Default for Sliders {
 	fn default() -> Self {
 		Self {
-			min: 0.0,
-			max: 10000.0,
-			logarithmic: true,
-			clamp_to_range: false,
-			smart_aim: true,
-			step: 10.0,
-			use_steps: false,
-			integer: false,
-			vertical: false,
-			value: 10.0,
+			min:0.0,
+			max:10000.0,
+			logarithmic:true,
+			clamp_to_range:false,
+			smart_aim:true,
+			step:10.0,
+			use_steps:false,
+			integer:false,
+			vertical:false,
+			value:10.0,
 		}
 	}
 }
 
 impl super::Demo for Sliders {
-	fn name(&self) -> &'static str {
-		"⬌ Sliders"
-	}
+	fn name(&self) -> &'static str { "⬌ Sliders" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		egui::Window::new(self.name()).open(open).resizable(false).show(ctx, |ui| {
 			use super::View as _;
 			self.ui(ui);
@@ -49,7 +48,7 @@ impl super::Demo for Sliders {
 }
 
 impl super::View for Sliders {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		let Self {
 			min,
 			max,
@@ -76,8 +75,11 @@ impl super::View for Sliders {
 		*min = min.clamp(type_min, type_max);
 		*max = max.clamp(type_min, type_max);
 
-		let orientation =
-			if *vertical { SliderOrientation::Vertical } else { SliderOrientation::Horizontal };
+		let orientation = if *vertical {
+			SliderOrientation::Vertical
+		} else {
+			SliderOrientation::Horizontal
+		};
 
 		let istep = if *use_steps { *step } else { 0.0 };
 		if *integer {
@@ -104,8 +106,8 @@ impl super::View for Sliders {
 			);
 
 			ui.label(
-				"Sliders will intelligently pick how many decimals to show. \
-                You can always see the full precision value by hovering the value.",
+				"Sliders will intelligently pick how many decimals to show. You can always see \
+				 the full precision value by hovering the value.",
 			);
 
 			if ui.button("Assign PI").clicked() {
@@ -155,17 +157,26 @@ impl super::View for Sliders {
 		ui.add_space(8.0);
 
 		ui.checkbox(logarithmic, "Logarithmic");
-		ui.label("Logarithmic sliders are great for when you want to span a huge range, i.e. from zero to a million.");
+		ui.label(
+			"Logarithmic sliders are great for when you want to span a huge range, i.e. from zero \
+			 to a million.",
+		);
 		ui.label("Logarithmic sliders can include infinity and zero.");
 		ui.add_space(8.0);
 
 		ui.checkbox(clamp_to_range, "Clamp to range");
 		ui.label("If true, the slider will clamp incoming and outgoing values to the given range.");
-		ui.label("If false, the slider can shows values outside its range, and you can manually enter values outside the range.");
+		ui.label(
+			"If false, the slider can shows values outside its range, and you can manually enter \
+			 values outside the range.",
+		);
 		ui.add_space(8.0);
 
 		ui.checkbox(smart_aim, "Smart Aim");
-		ui.label("Smart Aim will guide you towards round values when you drag the slider so you you are more likely to hit 250 than 247.23");
+		ui.label(
+			"Smart Aim will guide you towards round values when you drag the slider so you you \
+			 are more likely to hit 250 than 247.23",
+		);
 		ui.add_space(8.0);
 
 		ui.vertical_centered(|ui| {

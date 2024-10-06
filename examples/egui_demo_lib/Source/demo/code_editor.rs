@@ -3,37 +3,33 @@
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct CodeEditor {
-	language: String,
-	code: String,
+	language:String,
+	code:String,
 }
 
 impl Default for CodeEditor {
 	fn default() -> Self {
 		Self {
-			language: "rs".into(),
-			code: "// A very simple example\n\
-fn main() {\n\
-\tprintln!(\"Hello world!\");\n\
-}\n\
-"
-			.into(),
+			language:"rs".into(),
+			code:"// A very simple example\nfn main() {\n\tprintln!(\"Hello world!\");\n}\n".into(),
 		}
 	}
 }
 
 impl super::Demo for CodeEditor {
-	fn name(&self) -> &'static str {
-		"🖮 Code Editor"
-	}
+	fn name(&self) -> &'static str { "🖮 Code Editor" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		use super::View as _;
-		egui::Window::new(self.name()).open(open).default_height(500.0).show(ctx, |ui| self.ui(ui));
+		egui::Window::new(self.name())
+			.open(open)
+			.default_height(500.0)
+			.show(ctx, |ui| self.ui(ui));
 	}
 }
 
 impl super::View for CodeEditor {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		let Self { language, code } = self;
 
 		ui.horizontal(|ui| {
@@ -72,7 +68,7 @@ impl super::View for CodeEditor {
 			});
 		});
 
-		let mut layouter = |ui: &egui::Ui, string: &str, wrap_width: f32| {
+		let mut layouter = |ui:&egui::Ui, string:&str, wrap_width:f32| {
 			let mut layout_job =
 				crate::syntax_highlighting::highlight(ui.ctx(), &theme, string, language);
 			layout_job.wrap.max_width = wrap_width;

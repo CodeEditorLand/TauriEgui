@@ -2,18 +2,13 @@
 // SPDX-License-Identifier: Apache-2.0
 // SPDX-License-Identifier: MIT
 
-#![cfg_attr(
-	all(not(debug_assertions), target_os = "windows"),
-	windows_subsystem = "windows"
-)]
+#![cfg_attr(all(not(debug_assertions), target_os = "windows"), windows_subsystem = "windows")]
 
 use tauri::{RunEvent, State};
 use tauri_egui::eframe;
 
 #[tauri::command]
-async fn open_native_window(
-	egui_handle:State<'_, tauri_egui::EguiPluginHandle>,
-) -> Result<(), ()> {
+async fn open_native_window(egui_handle:State<'_, tauri_egui::EguiPluginHandle>) -> Result<(), ()> {
 	// let (egui_app, rx) = Layout::new();
 	let native_options = eframe::NativeOptions {
 		drag_and_drop_support:true,

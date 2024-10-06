@@ -1,17 +1,15 @@
 #[derive(Debug)]
 pub struct CodeExample {
-	name: String,
-	age: u32,
+	name:String,
+	age:u32,
 }
 
 impl Default for CodeExample {
-	fn default() -> Self {
-		Self { name: "Arthur".to_owned(), age: 42 }
-	}
+	fn default() -> Self { Self { name:"Arthur".to_owned(), age:42 } }
 }
 
 impl CodeExample {
-	fn samples_in_grid(&mut self, ui: &mut egui::Ui) {
+	fn samples_in_grid(&mut self, ui:&mut egui::Ui) {
 		show_code(ui, r#"ui.heading("Code samples");"#);
 		ui.heading("Code samples");
 		ui.end_row();
@@ -55,11 +53,9 @@ impl CodeExample {
 }
 
 impl super::Demo for CodeExample {
-	fn name(&self) -> &'static str {
-		"🖮 Code Example"
-	}
+	fn name(&self) -> &'static str { "🖮 Code Example" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		use super::View;
 		egui::Window::new(self.name())
 			.open(open)
@@ -71,7 +67,7 @@ impl super::Demo for CodeExample {
 }
 
 impl super::View for CodeExample {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		use crate::syntax_highlighting::code_view_ui;
 
 		ui.vertical_centered(|ui| {
@@ -124,15 +120,13 @@ impl CodeExample {
 	}
 }
 
-fn show_code(ui: &mut egui::Ui, code: &str) {
+fn show_code(ui:&mut egui::Ui, code:&str) {
 	let code = remove_leading_indentation(code.trim_start_matches('\n'));
 	crate::syntax_highlighting::code_view_ui(ui, &code);
 }
 
-fn remove_leading_indentation(code: &str) -> String {
-	fn is_indent(c: &u8) -> bool {
-		matches!(*c, b' ' | b'\t')
-	}
+fn remove_leading_indentation(code:&str) -> String {
+	fn is_indent(c:&u8) -> bool { matches!(*c, b' ' | b'\t') }
 
 	let first_line_indent = code.bytes().take_while(is_indent).count();
 

@@ -5,42 +5,60 @@ use egui::{
 	*,
 };
 use plot::{
-	Arrows, Bar, BarChart, BoxElem, BoxPlot, BoxSpread, CoordinatesFormatter, Corner, HLine,
-	Legend, Line, LineStyle, MarkerShape, Plot, PlotImage, PlotPoint, PlotPoints, Points, Polygon,
-	Text, VLine,
+	Arrows,
+	Bar,
+	BarChart,
+	BoxElem,
+	BoxPlot,
+	BoxSpread,
+	CoordinatesFormatter,
+	Corner,
+	HLine,
+	Legend,
+	Line,
+	LineStyle,
+	MarkerShape,
+	Plot,
+	PlotImage,
+	PlotPoint,
+	PlotPoints,
+	Points,
+	Polygon,
+	Text,
+	VLine,
 };
 
 // ----------------------------------------------------------------------------
 
 #[derive(PartialEq)]
 struct LineDemo {
-	animate: bool,
-	time: f64,
-	circle_radius: f64,
-	circle_center: Pos2,
-	square: bool,
-	proportional: bool,
-	coordinates: bool,
-	line_style: LineStyle,
+	animate:bool,
+	time:f64,
+	circle_radius:f64,
+	circle_center:Pos2,
+	square:bool,
+	proportional:bool,
+	coordinates:bool,
+	line_style:LineStyle,
 }
 
 impl Default for LineDemo {
 	fn default() -> Self {
 		Self {
-			animate: !cfg!(debug_assertions),
-			time: 0.0,
-			circle_radius: 1.5,
-			circle_center: Pos2::new(0.0, 0.0),
-			square: false,
-			proportional: true,
-			coordinates: true,
-			line_style: LineStyle::Solid,
+			animate:!cfg!(debug_assertions),
+			time:0.0,
+			circle_radius:1.5,
+			circle_center:Pos2::new(0.0, 0.0),
+			square:false,
+			proportional:true,
+			coordinates:true,
+			line_style:LineStyle::Solid,
 		}
 	}
 }
 
 impl LineDemo {
-	fn options_ui(&mut self, ui: &mut Ui) {
+	fn options_ui(&mut self, ui:&mut Ui) {
 		let Self {
 			animate,
 			time: _,
@@ -80,9 +98,9 @@ impl LineDemo {
 				ui.checkbox(coordinates, "Show coordinates")
 					.on_hover_text("Can take a custom formatting function.");
 
-				ComboBox::from_label("Line style").selected_text(line_style.to_string()).show_ui(
-					ui,
-					|ui| {
+				ComboBox::from_label("Line style")
+					.selected_text(line_style.to_string())
+					.show_ui(ui, |ui| {
 						for style in &[
 							LineStyle::Solid,
 							LineStyle::dashed_dense(),
@@ -92,15 +110,14 @@ impl LineDemo {
 						] {
 							ui.selectable_value(line_style, *style, style.to_string());
 						}
-					},
-				);
+					});
 			});
 		});
 	}
 
 	fn circle(&self) -> Line {
 		let n = 512;
-		let circle_points: PlotPoints = (0..=n)
+		let circle_points:PlotPoints = (0..=n)
 			.map(|i| {
 				let t = remap(i as f64, 0.0..=(n as f64), 0.0..=TAU);
 				let r = self.circle_radius;
@@ -142,7 +159,7 @@ impl LineDemo {
 }
 
 impl LineDemo {
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		self.options_ui(ui);
 		if self.animate {
 			ui.ctx().request_repaint();
@@ -171,19 +188,19 @@ impl LineDemo {
 
 #[derive(PartialEq)]
 struct MarkerDemo {
-	fill_markers: bool,
-	marker_radius: f32,
-	automatic_colors: bool,
-	marker_color: Color32,
+	fill_markers:bool,
+	marker_radius:f32,
+	automatic_colors:bool,
+	marker_color:Color32,
 }
 
 impl Default for MarkerDemo {
 	fn default() -> Self {
 		Self {
-			fill_markers: true,
-			marker_radius: 5.0,
-			automatic_colors: true,
-			marker_color: Color32::GREEN,
+			fill_markers:true,
+			marker_radius:5.0,
+			automatic_colors:true,
+			marker_color:Color32::GREEN,
 		}
 	}
 }
@@ -216,7 +233,7 @@ impl MarkerDemo {
 			.collect()
 	}
 
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		ui.horizontal(|ui| {
 			ui.checkbox(&mut self.fill_markers, "Fill");
 			ui.add(
@@ -246,23 +263,19 @@ impl MarkerDemo {
 
 #[derive(Default, PartialEq)]
 struct LegendDemo {
-	config: Legend,
+	config:Legend,
 }
 
 impl LegendDemo {
-	fn line_with_slope(slope: f64) -> Line {
+	fn line_with_slope(slope:f64) -> Line {
 		Line::new(PlotPoints::from_explicit_callback(move |x| slope * x, .., 100))
 	}
 
-	fn sin() -> Line {
-		Line::new(PlotPoints::from_explicit_callback(move |x| x.sin(), .., 100))
-	}
+	fn sin() -> Line { Line::new(PlotPoints::from_explicit_callback(move |x| x.sin(), .., 100)) }
 
-	fn cos() -> Line {
-		Line::new(PlotPoints::from_explicit_callback(move |x| x.cos(), .., 100))
-	}
+	fn cos() -> Line { Line::new(PlotPoints::from_explicit_callback(move |x| x.cos(), .., 100)) }
 
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		let LegendDemo { config } = self;
 
 		egui::Grid::new("settings").show(ui, |ui| {
@@ -311,13 +324,11 @@ impl LegendDemo {
 struct CustomAxisDemo {}
 
 impl CustomAxisDemo {
-	const MINS_PER_DAY: f64 = 24.0 * 60.0;
-	const MINS_PER_H: f64 = 60.0;
+	const MINS_PER_DAY:f64 = 24.0 * 60.0;
+	const MINS_PER_H:f64 = 60.0;
 
 	fn logistic_fn() -> Line {
-		fn days(min: f64) -> f64 {
-			CustomAxisDemo::MINS_PER_DAY * min
-		}
+		fn days(min:f64) -> f64 { CustomAxisDemo::MINS_PER_DAY * min }
 
 		let values = PlotPoints::from_explicit_callback(
 			move |x| 1.0 / (1.0 + (-2.5 * (x / CustomAxisDemo::MINS_PER_DAY - 2.0)).exp()),
@@ -328,9 +339,10 @@ impl CustomAxisDemo {
 	}
 
 	#[allow(clippy::needless_pass_by_value)]
-	fn x_grid(input: GridInput) -> Vec<GridMark> {
+	fn x_grid(input:GridInput) -> Vec<GridMark> {
 		// Note: this always fills all possible marks. For optimization, `input.bounds`
-		// could be used to decide when the low-interval grids (minutes) should be added.
+		// could be used to decide when the low-interval grids (minutes) should be
+		// added.
 
 		let mut marks = vec![];
 
@@ -353,34 +365,26 @@ impl CustomAxisDemo {
 				continue;
 			};
 
-			marks.push(GridMark { value: i as f64, step_size });
+			marks.push(GridMark { value:i as f64, step_size });
 		}
 
 		marks
 	}
 
 	#[allow(clippy::unused_self)]
-	fn ui(&mut self, ui: &mut Ui) -> Response {
-		const MINS_PER_DAY: f64 = CustomAxisDemo::MINS_PER_DAY;
-		const MINS_PER_H: f64 = CustomAxisDemo::MINS_PER_H;
+	fn ui(&mut self, ui:&mut Ui) -> Response {
+		const MINS_PER_DAY:f64 = CustomAxisDemo::MINS_PER_DAY;
+		const MINS_PER_H:f64 = CustomAxisDemo::MINS_PER_H;
 
-		fn day(x: f64) -> f64 {
-			(x / MINS_PER_DAY).floor()
-		}
+		fn day(x:f64) -> f64 { (x / MINS_PER_DAY).floor() }
 
-		fn hour(x: f64) -> f64 {
-			(x.rem_euclid(MINS_PER_DAY) / MINS_PER_H).floor()
-		}
+		fn hour(x:f64) -> f64 { (x.rem_euclid(MINS_PER_DAY) / MINS_PER_H).floor() }
 
-		fn minute(x: f64) -> f64 {
-			x.rem_euclid(MINS_PER_H).floor()
-		}
+		fn minute(x:f64) -> f64 { x.rem_euclid(MINS_PER_H).floor() }
 
-		fn percent(y: f64) -> f64 {
-			100.0 * y
-		}
+		fn percent(y:f64) -> f64 { 100.0 * y }
 
-		let x_fmt = |x, _range: &RangeInclusive<f64>| {
+		let x_fmt = |x, _range:&RangeInclusive<f64>| {
 			if x < 0.0 * MINS_PER_DAY || x >= 5.0 * MINS_PER_DAY {
 				// No labels outside value bounds
 				String::new()
@@ -393,7 +397,7 @@ impl CustomAxisDemo {
 			}
 		};
 
-		let y_fmt = |y, _range: &RangeInclusive<f64>| {
+		let y_fmt = |y, _range:&RangeInclusive<f64>| {
 			// Display only integer percentages
 			if !is_approx_zero(y) && is_approx_integer(100.0 * y) {
 				format!("{:.0}%", percent(y))
@@ -402,7 +406,7 @@ impl CustomAxisDemo {
 			}
 		};
 
-		let label_fmt = |_s: &str, val: &PlotPoint| {
+		let label_fmt = |_s:&str, val:&PlotPoint| {
 			format!(
 				"Day {d}, {h}:{m:02}\n{p:.2}%",
 				d = day(val.x),
@@ -431,33 +435,29 @@ impl CustomAxisDemo {
 
 #[derive(PartialEq)]
 struct LinkedAxisDemo {
-	link_x: bool,
-	link_y: bool,
-	group: plot::LinkedAxisGroup,
+	link_x:bool,
+	link_y:bool,
+	group:plot::LinkedAxisGroup,
 }
 
 impl Default for LinkedAxisDemo {
 	fn default() -> Self {
 		let link_x = true;
 		let link_y = false;
-		Self { link_x, link_y, group: plot::LinkedAxisGroup::new(link_x, link_y) }
+		Self { link_x, link_y, group:plot::LinkedAxisGroup::new(link_x, link_y) }
 	}
 }
 
 impl LinkedAxisDemo {
-	fn line_with_slope(slope: f64) -> Line {
+	fn line_with_slope(slope:f64) -> Line {
 		Line::new(PlotPoints::from_explicit_callback(move |x| slope * x, .., 100))
 	}
 
-	fn sin() -> Line {
-		Line::new(PlotPoints::from_explicit_callback(move |x| x.sin(), .., 100))
-	}
+	fn sin() -> Line { Line::new(PlotPoints::from_explicit_callback(move |x| x.sin(), .., 100)) }
 
-	fn cos() -> Line {
-		Line::new(PlotPoints::from_explicit_callback(move |x| x.cos(), .., 100))
-	}
+	fn cos() -> Line { Line::new(PlotPoints::from_explicit_callback(move |x| x.cos(), .., 100)) }
 
-	fn configure_plot(plot_ui: &mut plot::PlotUi) {
+	fn configure_plot(plot_ui:&mut plot::PlotUi) {
 		plot_ui.line(LinkedAxisDemo::line_with_slope(0.5));
 		plot_ui.line(LinkedAxisDemo::line_with_slope(1.0));
 		plot_ui.line(LinkedAxisDemo::line_with_slope(2.0));
@@ -465,7 +465,7 @@ impl LinkedAxisDemo {
 		plot_ui.line(LinkedAxisDemo::cos());
 	}
 
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		ui.horizontal(|ui| {
 			ui.label("Linked axes:");
 			ui.checkbox(&mut self.link_x, "X");
@@ -501,13 +501,13 @@ impl LinkedAxisDemo {
 
 #[derive(PartialEq, Default)]
 struct ItemsDemo {
-	texture: Option<egui::TextureHandle>,
+	texture:Option<egui::TextureHandle>,
 }
 
 impl ItemsDemo {
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		let n = 100;
-		let mut sin_values: Vec<_> = (0..=n)
+		let mut sin_values:Vec<_> = (0..=n)
 			.map(|i| remap(i as f64, 0.0..=n as f64, -TAU..=TAU))
 			.map(|i| [i, i.sin()])
 			.collect();
@@ -536,7 +536,7 @@ impl ItemsDemo {
 			Arrows::new(arrow_origins, arrow_tips)
 		};
 
-		let texture: &egui::TextureHandle = self.texture.get_or_insert_with(|| {
+		let texture:&egui::TextureHandle = self.texture.get_or_insert_with(|| {
 			ui.ctx().load_texture(
 				"plot_demo",
 				egui::ColorImage::example(),
@@ -580,7 +580,7 @@ struct InteractionDemo {}
 
 impl InteractionDemo {
 	#[allow(clippy::unused_self)]
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		let plot = Plot::new("interaction_demo").height(300.0);
 
 		let InnerResponse {
@@ -628,25 +628,21 @@ enum Chart {
 }
 
 impl Default for Chart {
-	fn default() -> Self {
-		Self::GaussBars
-	}
+	fn default() -> Self { Self::GaussBars }
 }
 
 #[derive(PartialEq)]
 struct ChartsDemo {
-	chart: Chart,
-	vertical: bool,
+	chart:Chart,
+	vertical:bool,
 }
 
 impl Default for ChartsDemo {
-	fn default() -> Self {
-		Self { vertical: true, chart: Chart::default() }
-	}
+	fn default() -> Self { Self { vertical:true, chart:Chart::default() } }
 }
 
 impl ChartsDemo {
-	fn ui(&mut self, ui: &mut Ui) -> Response {
+	fn ui(&mut self, ui:&mut Ui) -> Response {
 		ui.label("Type:");
 		ui.horizontal(|ui| {
 			ui.selectable_value(&mut self.chart, Chart::GaussBars, "Histogram");
@@ -665,7 +661,7 @@ impl ChartsDemo {
 		}
 	}
 
-	fn bar_gauss(&self, ui: &mut Ui) -> Response {
+	fn bar_gauss(&self, ui:&mut Ui) -> Response {
 		let mut chart = BarChart::new(
 			(-395..=395)
         .step_by(10)
@@ -693,7 +689,7 @@ impl ChartsDemo {
 			.response
 	}
 
-	fn bar_stacked(&self, ui: &mut Ui) -> Response {
+	fn bar_stacked(&self, ui:&mut Ui) -> Response {
 		let mut chart1 = BarChart::new(vec![
 			Bar::new(0.5, 1.0).name("Day 1"),
 			Bar::new(1.5, 3.0).name("Day 2"),
@@ -756,7 +752,7 @@ impl ChartsDemo {
 			.response
 	}
 
-	fn box_plot(&self, ui: &mut Ui) -> Response {
+	fn box_plot(&self, ui:&mut Ui) -> Response {
 		let yellow = Color32::from_rgb(248, 252, 168);
 		let mut box1 = BoxPlot::new(vec![
 			BoxElem::new(0.5, BoxSpread::new(1.5, 2.2, 2.5, 2.6, 3.1)).name("Day 1"),
@@ -814,32 +810,28 @@ enum Panel {
 }
 
 impl Default for Panel {
-	fn default() -> Self {
-		Self::Lines
-	}
+	fn default() -> Self { Self::Lines }
 }
 
 // ----------------------------------------------------------------------------
 
 #[derive(PartialEq, Default)]
 pub struct PlotDemo {
-	line_demo: LineDemo,
-	marker_demo: MarkerDemo,
-	legend_demo: LegendDemo,
-	charts_demo: ChartsDemo,
-	items_demo: ItemsDemo,
-	interaction_demo: InteractionDemo,
-	custom_axes_demo: CustomAxisDemo,
-	linked_axes_demo: LinkedAxisDemo,
-	open_panel: Panel,
+	line_demo:LineDemo,
+	marker_demo:MarkerDemo,
+	legend_demo:LegendDemo,
+	charts_demo:ChartsDemo,
+	items_demo:ItemsDemo,
+	interaction_demo:InteractionDemo,
+	custom_axes_demo:CustomAxisDemo,
+	linked_axes_demo:LinkedAxisDemo,
+	open_panel:Panel,
 }
 
 impl super::Demo for PlotDemo {
-	fn name(&self) -> &'static str {
-		"🗠 Plot"
-	}
+	fn name(&self) -> &'static str { "🗠 Plot" }
 
-	fn show(&mut self, ctx: &Context, open: &mut bool) {
+	fn show(&mut self, ctx:&Context, open:&mut bool) {
 		use super::View as _;
 		Window::new(self.name())
 			.open(open)
@@ -850,7 +842,7 @@ impl super::Demo for PlotDemo {
 }
 
 impl super::View for PlotDemo {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		ui.horizontal(|ui| {
 			egui::reset_button(ui, self);
 			ui.collapsing("Instructions", |ui| {
@@ -883,36 +875,32 @@ impl super::View for PlotDemo {
 		match self.open_panel {
 			Panel::Lines => {
 				self.line_demo.ui(ui);
-			}
+			},
 			Panel::Markers => {
 				self.marker_demo.ui(ui);
-			}
+			},
 			Panel::Legend => {
 				self.legend_demo.ui(ui);
-			}
+			},
 			Panel::Charts => {
 				self.charts_demo.ui(ui);
-			}
+			},
 			Panel::Items => {
 				self.items_demo.ui(ui);
-			}
+			},
 			Panel::Interaction => {
 				self.interaction_demo.ui(ui);
-			}
+			},
 			Panel::CustomAxes => {
 				self.custom_axes_demo.ui(ui);
-			}
+			},
 			Panel::LinkedAxes => {
 				self.linked_axes_demo.ui(ui);
-			}
+			},
 		}
 	}
 }
 
-fn is_approx_zero(val: f64) -> bool {
-	val.abs() < 1e-6
-}
+fn is_approx_zero(val:f64) -> bool { val.abs() < 1e-6 }
 
-fn is_approx_integer(val: f64) -> bool {
-	val.fract().abs() < 1e-6
-}
+fn is_approx_integer(val:f64) -> bool { val.fract().abs() < 1e-6 }

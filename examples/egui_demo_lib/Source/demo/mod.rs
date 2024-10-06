@@ -39,7 +39,7 @@ pub use widget_gallery::WidgetGallery;
 
 /// Something to view in the demo windows
 pub trait View {
-	fn ui(&mut self, ui: &mut egui::Ui);
+	fn ui(&mut self, ui:&mut egui::Ui);
 }
 
 /// Something to view
@@ -48,5 +48,5 @@ pub trait Demo {
 	fn name(&self) -> &'static str;
 
 	/// Show windows, etc
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool);
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool);
 }

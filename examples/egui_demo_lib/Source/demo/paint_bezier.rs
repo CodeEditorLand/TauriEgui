@@ -7,43 +7,43 @@ use egui::{
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct PaintBezier {
 	/// Bézier curve degree, it can be 3, 4.
-	degree: usize,
+	degree:usize,
 
 	/// The control points. The [`Self::degree`] first of them are used.
-	control_points: [Pos2; 4],
+	control_points:[Pos2; 4],
 
 	/// Stroke for Bézier curve.
-	stroke: Stroke,
+	stroke:Stroke,
 
 	/// Fill for Bézier curve.
-	fill: Color32,
+	fill:Color32,
 
 	/// Stroke for auxiliary lines.
-	aux_stroke: Stroke,
+	aux_stroke:Stroke,
 
-	bounding_box_stroke: Stroke,
+	bounding_box_stroke:Stroke,
 }
 
 impl Default for PaintBezier {
 	fn default() -> Self {
 		Self {
-			degree: 4,
-			control_points: [
+			degree:4,
+			control_points:[
 				pos2(50.0, 50.0),
 				pos2(60.0, 250.0),
 				pos2(200.0, 200.0),
 				pos2(250.0, 50.0),
 			],
-			stroke: Stroke::new(1.0, Color32::from_rgb(25, 200, 100)),
-			fill: Color32::from_rgb(50, 100, 150).linear_multiply(0.25),
-			aux_stroke: Stroke::new(1.0, Color32::RED.linear_multiply(0.25)),
-			bounding_box_stroke: Stroke::new(0.0, Color32::LIGHT_GREEN.linear_multiply(0.25)),
+			stroke:Stroke::new(1.0, Color32::from_rgb(25, 200, 100)),
+			fill:Color32::from_rgb(50, 100, 150).linear_multiply(0.25),
+			aux_stroke:Stroke::new(1.0, Color32::RED.linear_multiply(0.25)),
+			bounding_box_stroke:Stroke::new(0.0, Color32::LIGHT_GREEN.linear_multiply(0.25)),
 		}
 	}
 }
 
 impl PaintBezier {
-	pub fn ui_control(&mut self, ui: &mut egui::Ui) {
+	pub fn ui_control(&mut self, ui:&mut egui::Ui) {
 		ui.collapsing("Colors", |ui| {
 			ui.horizontal(|ui| {
 				ui.label("Fill color:");
@@ -68,7 +68,7 @@ impl PaintBezier {
 		ui.small("Only convex curves can be accurately filled.");
 	}
 
-	pub fn ui_content(&mut self, ui: &mut Ui) -> egui::Response {
+	pub fn ui_content(&mut self, ui:&mut Ui) -> egui::Response {
 		let (response, painter) =
 			ui.allocate_painter(Vec2::new(ui.available_width(), 300.0), Sense::hover());
 
@@ -102,7 +102,7 @@ impl PaintBezier {
 			));
 		}
 
-		let points_in_screen: Vec<Pos2> =
+		let points_in_screen:Vec<Pos2> =
 			self.control_points.iter().take(self.degree).map(|p| to_screen * *p).collect();
 
 		match self.degree {
@@ -116,7 +116,7 @@ impl PaintBezier {
 					self.bounding_box_stroke,
 				));
 				painter.add(shape);
-			}
+			},
 			4 => {
 				let points = points_in_screen.clone().try_into().unwrap();
 				let shape =
@@ -127,10 +127,10 @@ impl PaintBezier {
 					self.bounding_box_stroke,
 				));
 				painter.add(shape);
-			}
+			},
 			_ => {
 				unreachable!();
-			}
+			},
 		};
 
 		painter.add(PathShape::line(points_in_screen, self.aux_stroke));
@@ -141,11 +141,9 @@ impl PaintBezier {
 }
 
 impl super::Demo for PaintBezier {
-	fn name(&self) -> &'static str {
-		"） Bézier Curve"
-	}
+	fn name(&self) -> &'static str { "） Bézier Curve" }
 
-	fn show(&mut self, ctx: &Context, open: &mut bool) {
+	fn show(&mut self, ctx:&Context, open:&mut bool) {
 		use super::View as _;
 		Window::new(self.name())
 			.open(open)
@@ -157,7 +155,7 @@ impl super::Demo for PaintBezier {
 }
 
 impl super::View for PaintBezier {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		ui.vertical_centered(|ui| {
 			ui.add(crate::egui_github_link_file!());
 		});

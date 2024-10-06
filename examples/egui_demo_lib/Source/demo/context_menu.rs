@@ -6,51 +6,47 @@ enum Plot {
 	Sigmoid,
 }
 
-fn gaussian(x: f64) -> f64 {
-	let var: f64 = 2.0;
+fn gaussian(x:f64) -> f64 {
+	let var:f64 = 2.0;
 	f64::exp(-(x / var).powi(2)) / (var * f64::sqrt(std::f64::consts::TAU))
 }
 
-fn sigmoid(x: f64) -> f64 {
-	-1.0 + 2.0 / (1.0 + f64::exp(-x))
-}
+fn sigmoid(x:f64) -> f64 { -1.0 + 2.0 / (1.0 + f64::exp(-x)) }
 
 #[derive(Clone, PartialEq)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub struct ContextMenus {
-	plot: Plot,
-	show_axes: [bool; 2],
-	allow_drag: bool,
-	allow_zoom: bool,
-	allow_scroll: bool,
-	center_x_axis: bool,
-	center_y_axis: bool,
-	width: f32,
-	height: f32,
+	plot:Plot,
+	show_axes:[bool; 2],
+	allow_drag:bool,
+	allow_zoom:bool,
+	allow_scroll:bool,
+	center_x_axis:bool,
+	center_y_axis:bool,
+	width:f32,
+	height:f32,
 }
 
 impl Default for ContextMenus {
 	fn default() -> Self {
 		Self {
-			plot: Plot::Sin,
-			show_axes: [true, true],
-			allow_drag: true,
-			allow_zoom: true,
-			allow_scroll: true,
-			center_x_axis: false,
-			center_y_axis: false,
-			width: 400.0,
-			height: 200.0,
+			plot:Plot::Sin,
+			show_axes:[true, true],
+			allow_drag:true,
+			allow_zoom:true,
+			allow_scroll:true,
+			center_x_axis:false,
+			center_y_axis:false,
+			width:400.0,
+			height:200.0,
 		}
 	}
 }
 
 impl super::Demo for ContextMenus {
-	fn name(&self) -> &'static str {
-		"☰ Context Menus"
-	}
+	fn name(&self) -> &'static str { "☰ Context Menus" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		use super::View;
 		egui::Window::new(self.name())
 			.vscroll(false)
@@ -61,7 +57,7 @@ impl super::Demo for ContextMenus {
 }
 
 impl super::View for ContextMenus {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		ui.horizontal(|ui| {
 			ui.menu_button("Click for menu", Self::nested_menus);
 			ui.button("Right-click for menu").context_menu(Self::nested_menus);
@@ -103,7 +99,7 @@ impl super::View for ContextMenus {
 }
 
 impl ContextMenus {
-	fn example_plot(&self, ui: &mut egui::Ui) -> egui::Response {
+	fn example_plot(&self, ui:&mut egui::Ui) -> egui::Response {
 		use egui::plot::{Line, PlotPoints};
 		let n = 128;
 		let line = Line::new(
@@ -133,7 +129,7 @@ impl ContextMenus {
 			.response
 	}
 
-	fn nested_menus(ui: &mut egui::Ui) {
+	fn nested_menus(ui:&mut egui::Ui) {
 		if ui.button("Open...").clicked() {
 			ui.close_menu();
 		}

@@ -44,9 +44,7 @@ impl<T:UserEvent, R:Runtime> PluginBuilder<T> for EguiPluginBuilder<R> {
 		let plugin = EguiPlugin {
 			context:plugin::Context {
 				inner:context,
-				main_thread:plugin::MainThreadContext {
-					windows:Default::default(),
-				},
+				main_thread:plugin::MainThreadContext { windows:Default::default() },
 				webview_id_map:Default::default(),
 			},
 			create_window_channel:sync_channel(1),

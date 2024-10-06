@@ -9,68 +9,68 @@ enum Enum {
 /// Shows off one example of each major type of widget.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub struct WidgetGallery {
-	enabled: bool,
-	visible: bool,
-	boolean: bool,
-	radio: Enum,
-	scalar: f32,
-	string: String,
-	color: egui::Color32,
-	animate_progress_bar: bool,
+	enabled:bool,
+	visible:bool,
+	boolean:bool,
+	radio:Enum,
+	scalar:f32,
+	string:String,
+	color:egui::Color32,
+	animate_progress_bar:bool,
 
 	#[cfg(feature = "chrono")]
 	#[cfg_attr(feature = "serde", serde(skip))]
-	date: Option<chrono::Date<chrono::Utc>>,
+	date:Option<chrono::Date<chrono::Utc>>,
 
 	#[cfg_attr(feature = "serde", serde(skip))]
-	texture: Option<egui::TextureHandle>,
+	texture:Option<egui::TextureHandle>,
 }
 
 impl Default for WidgetGallery {
 	fn default() -> Self {
 		Self {
-			enabled: true,
-			visible: true,
-			boolean: false,
-			radio: Enum::First,
-			scalar: 42.0,
-			string: Default::default(),
-			color: egui::Color32::LIGHT_BLUE.linear_multiply(0.5),
-			animate_progress_bar: false,
+			enabled:true,
+			visible:true,
+			boolean:false,
+			radio:Enum::First,
+			scalar:42.0,
+			string:Default::default(),
+			color:egui::Color32::LIGHT_BLUE.linear_multiply(0.5),
+			animate_progress_bar:false,
 			#[cfg(feature = "chrono")]
-			date: None,
-			texture: None,
+			date:None,
+			texture:None,
 		}
 	}
 }
 
 impl super::Demo for WidgetGallery {
-	fn name(&self) -> &'static str {
-		"🗄 Widget Gallery"
-	}
+	fn name(&self) -> &'static str { "🗄 Widget Gallery" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
-		egui::Window::new(self.name()).open(open).resizable(true).default_width(280.0).show(
-			ctx,
-			|ui| {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
+		egui::Window::new(self.name())
+			.open(open)
+			.resizable(true)
+			.default_width(280.0)
+			.show(ctx, |ui| {
 				use super::View as _;
 				self.ui(ui);
-			},
-		);
+			});
 	}
 }
 
 impl super::View for WidgetGallery {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		ui.add_enabled_ui(self.enabled, |ui| {
 			ui.set_visible(self.visible);
 
-			egui::Grid::new("my_grid").num_columns(2).spacing([40.0, 4.0]).striped(true).show(
-				ui,
-				|ui| {
+			egui::Grid::new("my_grid")
+				.num_columns(2)
+				.spacing([40.0, 4.0])
+				.striped(true)
+				.show(ui, |ui| {
 					self.gallery_grid_contents(ui);
-				},
-			);
+				});
 		});
 
 		ui.separator();
@@ -87,17 +87,16 @@ impl super::View for WidgetGallery {
 		ui.separator();
 
 		ui.vertical_centered(|ui| {
-            let tooltip_text = "The full egui documentation.\nYou can also click the different widgets names in the left column.";
-            ui.hyperlink("https://docs.rs/egui/").on_hover_text(tooltip_text);
-            ui.add(crate::egui_github_link_file!(
-                "Source code of the widget gallery"
-            ));
-        });
+			let tooltip_text = "The full egui documentation.\nYou can also click the different \
+			                    widgets names in the left column.";
+			ui.hyperlink("https://docs.rs/egui/").on_hover_text(tooltip_text);
+			ui.add(crate::egui_github_link_file!("Source code of the widget gallery"));
+		});
 	}
 }
 
 impl WidgetGallery {
-	fn gallery_grid_contents(&mut self, ui: &mut egui::Ui) {
+	fn gallery_grid_contents(&mut self, ui:&mut egui::Ui) {
 		let Self {
 			enabled: _,
 			visible: _,
@@ -112,7 +111,7 @@ impl WidgetGallery {
 			texture,
 		} = self;
 
-		let texture: &egui::TextureHandle = texture.get_or_insert_with(|| {
+		let texture:&egui::TextureHandle = texture.get_or_insert_with(|| {
 			ui.ctx().load_texture(
 				"example",
 				egui::ColorImage::example(),
@@ -167,14 +166,13 @@ impl WidgetGallery {
 
 		ui.add(doc_link_label("ComboBox", "ComboBox"));
 
-		egui::ComboBox::from_label("Take your pick").selected_text(format!("{:?}", radio)).show_ui(
-			ui,
-			|ui| {
+		egui::ComboBox::from_label("Take your pick")
+			.selected_text(format!("{:?}", radio))
+			.show_ui(ui, |ui| {
 				ui.selectable_value(radio, Enum::First, "First");
 				ui.selectable_value(radio, Enum::Second, "Second");
 				ui.selectable_value(radio, Enum::Third, "Third");
-			},
-		);
+			});
 		ui.end_row();
 
 		ui.add(doc_link_label("Slider", "Slider"));
@@ -187,10 +185,13 @@ impl WidgetGallery {
 
 		ui.add(doc_link_label("ProgressBar", "ProgressBar"));
 		let progress = *scalar / 360.0;
-		let progress_bar =
-			egui::ProgressBar::new(progress).show_percentage().animate(*animate_progress_bar);
-		*animate_progress_bar =
-			ui.add(progress_bar).on_hover_text("The progress bar can be animated!").hovered();
+		let progress_bar = egui::ProgressBar::new(progress)
+			.show_percentage()
+			.animate(*animate_progress_bar);
+		*animate_progress_bar = ui
+			.add(progress_bar)
+			.on_hover_text("The progress bar can be animated!")
+			.hovered();
 		ui.end_row();
 
 		ui.add(doc_link_label("Color picker", "color_edit"));
@@ -239,17 +240,16 @@ impl WidgetGallery {
 
 		ui.hyperlink_to("Custom widget:", super::toggle_switch::url_to_file_source_code());
 		ui.add(super::toggle_switch::toggle(boolean)).on_hover_text(
-			"It's easy to create your own widgets!\n\
-            This toggle switch is just 15 lines of code.",
+			"It's easy to create your own widgets!\nThis toggle switch is just 15 lines of code.",
 		);
 		ui.end_row();
 	}
 }
 
-fn example_plot(ui: &mut egui::Ui) -> egui::Response {
+fn example_plot(ui:&mut egui::Ui) -> egui::Response {
 	use egui::plot::{Line, PlotPoints};
 	let n = 128;
-	let line_points: PlotPoints = (0..=n)
+	let line_points:PlotPoints = (0..=n)
 		.map(|i| {
 			use std::f64::consts::TAU;
 			let x = egui::remap(i as f64, 0.0..=n as f64, -TAU..=TAU);
@@ -264,10 +264,10 @@ fn example_plot(ui: &mut egui::Ui) -> egui::Response {
 		.response
 }
 
-fn doc_link_label<'a>(title: &'a str, search_term: &'a str) -> impl egui::Widget + 'a {
+fn doc_link_label<'a>(title:&'a str, search_term:&'a str) -> impl egui::Widget + 'a {
 	let label = format!("{}:", title);
 	let url = format!("https://docs.rs/egui?search={}", search_term);
-	move |ui: &mut egui::Ui| {
+	move |ui:&mut egui::Ui| {
 		ui.hyperlink_to(label, url).on_hover_ui(|ui| {
 			ui.horizontal_wrapped(|ui| {
 				ui.label("Search egui docs for");

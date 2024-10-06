@@ -10,26 +10,22 @@ enum ScrollDemo {
 }
 
 impl Default for ScrollDemo {
-	fn default() -> Self {
-		Self::ScrollTo
-	}
+	fn default() -> Self { Self::ScrollTo }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 #[derive(Default, PartialEq)]
 pub struct Scrolling {
-	demo: ScrollDemo,
-	scroll_to: ScrollTo,
-	scroll_stick_to: ScrollStickTo,
+	demo:ScrollDemo,
+	scroll_to:ScrollTo,
+	scroll_stick_to:ScrollStickTo,
 }
 
 impl super::Demo for Scrolling {
-	fn name(&self) -> &'static str {
-		"↕ Scrolling"
-	}
+	fn name(&self) -> &'static str { "↕ Scrolling" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
 		egui::Window::new(self.name()).open(open).resizable(false).show(ctx, |ui| {
 			use super::View as _;
 			self.ui(ui);
@@ -38,7 +34,7 @@ impl super::Demo for Scrolling {
 }
 
 impl super::View for Scrolling {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		ui.horizontal(|ui| {
 			ui.selectable_value(&mut self.demo, ScrollDemo::ScrollTo, "Scroll to");
 			ui.selectable_value(&mut self.demo, ScrollDemo::ManyLines, "Scroll a lot of lines");
@@ -49,21 +45,21 @@ impl super::View for Scrolling {
 		match self.demo {
 			ScrollDemo::ScrollTo => {
 				self.scroll_to.ui(ui);
-			}
+			},
 			ScrollDemo::ManyLines => {
 				huge_content_lines(ui);
-			}
+			},
 			ScrollDemo::LargeCanvas => {
 				huge_content_painter(ui);
-			}
+			},
 			ScrollDemo::StickToEnd => {
 				self.scroll_stick_to.ui(ui);
-			}
+			},
 		}
 	}
 }
 
-fn huge_content_lines(ui: &mut egui::Ui) {
+fn huge_content_lines(ui:&mut egui::Ui) {
 	ui.label(
 		"A lot of rows, but only the visible ones are layed out, so performance is still good:",
 	);
@@ -85,8 +81,9 @@ fn huge_content_lines(ui: &mut egui::Ui) {
 	);
 }
 
-fn huge_content_painter(ui: &mut egui::Ui) {
-	// This is similar to the other demo, but is fully manual, for when you want to do custom painting.
+fn huge_content_painter(ui:&mut egui::Ui) {
+	// This is similar to the other demo, but is fully manual, for when you want to
+	// do custom painting.
 	ui.label("A lot of rows, but only the visible ones are painted, so performance is still good:");
 	ui.add_space(4.0);
 
@@ -94,33 +91,39 @@ fn huge_content_painter(ui: &mut egui::Ui) {
 	let row_height = ui.fonts().row_height(&font_id) + ui.spacing().item_spacing.y;
 	let num_rows = 10_000;
 
-	ScrollArea::vertical().auto_shrink([false; 2]).show_viewport(ui, |ui, viewport| {
-		ui.set_height(row_height * num_rows as f32);
+	ScrollArea::vertical()
+		.auto_shrink([false; 2])
+		.show_viewport(ui, |ui, viewport| {
+			ui.set_height(row_height * num_rows as f32);
 
-		let first_item = (viewport.min.y / row_height).floor().at_least(0.0) as usize;
-		let last_item = (viewport.max.y / row_height).ceil() as usize + 1;
-		let last_item = last_item.at_most(num_rows);
+			let first_item = (viewport.min.y / row_height).floor().at_least(0.0) as usize;
+			let last_item = (viewport.max.y / row_height).ceil() as usize + 1;
+			let last_item = last_item.at_most(num_rows);
 
-		let mut used_rect = Rect::NOTHING;
+			let mut used_rect = Rect::NOTHING;
 
-		for i in first_item..last_item {
-			let indentation = (i % 100) as f32;
-			let x = ui.min_rect().left() + indentation;
-			let y = ui.min_rect().top() + i as f32 * row_height;
-			let text =
-				format!("This is row {}/{}, indented by {} pixels", i + 1, num_rows, indentation);
-			let text_rect = ui.painter().text(
-				pos2(x, y),
-				Align2::LEFT_TOP,
-				text,
-				font_id.clone(),
-				ui.visuals().text_color(),
-			);
-			used_rect = used_rect.union(text_rect);
-		}
+			for i in first_item..last_item {
+				let indentation = (i % 100) as f32;
+				let x = ui.min_rect().left() + indentation;
+				let y = ui.min_rect().top() + i as f32 * row_height;
+				let text = format!(
+					"This is row {}/{}, indented by {} pixels",
+					i + 1,
+					num_rows,
+					indentation
+				);
+				let text_rect = ui.painter().text(
+					pos2(x, y),
+					Align2::LEFT_TOP,
+					text,
+					font_id.clone(),
+					ui.visuals().text_color(),
+				);
+				used_rect = used_rect.union(text_rect);
+			}
 
-		ui.allocate_rect(used_rect, Sense::hover()); // make sure it is visible!
-	});
+			ui.allocate_rect(used_rect, Sense::hover()); // make sure it is visible!
+		});
 }
 
 // ----------------------------------------------------------------------------
@@ -129,19 +132,17 @@ fn huge_content_painter(ui: &mut egui::Ui) {
 #[cfg_attr(feature = "serde", serde(default))]
 #[derive(PartialEq)]
 struct ScrollTo {
-	track_item: usize,
-	tack_item_align: Option<Align>,
-	offset: f32,
+	track_item:usize,
+	tack_item_align:Option<Align>,
+	offset:f32,
 }
 
 impl Default for ScrollTo {
-	fn default() -> Self {
-		Self { track_item: 25, tack_item_align: Some(Align::Center), offset: 0.0 }
-	}
+	fn default() -> Self { Self { track_item:25, tack_item_align:Some(Align::Center), offset:0.0 } }
 }
 
 impl super::View for ScrollTo {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		ui.label("This shows how you can scroll to a specific item or pixel offset");
 
 		let mut track_item = false;
@@ -159,12 +160,14 @@ impl super::View for ScrollTo {
 			ui.label("Item align:");
 			track_item |=
 				ui.radio_value(&mut self.tack_item_align, Some(Align::Min), "Top").clicked();
-			track_item |=
-				ui.radio_value(&mut self.tack_item_align, Some(Align::Center), "Center").clicked();
+			track_item |= ui
+				.radio_value(&mut self.tack_item_align, Some(Align::Center), "Center")
+				.clicked();
 			track_item |=
 				ui.radio_value(&mut self.tack_item_align, Some(Align::Max), "Bottom").clicked();
-			track_item |=
-				ui.radio_value(&mut self.tack_item_align, None, "None (Bring into view)").clicked();
+			track_item |= ui
+				.radio_value(&mut self.tack_item_align, None, "None (Bring into view)")
+				.clicked();
 		});
 
 		ui.horizontal(|ui| {
@@ -228,12 +231,15 @@ impl super::View for ScrollTo {
 #[cfg_attr(feature = "serde", serde(default))]
 #[derive(Default, PartialEq)]
 struct ScrollStickTo {
-	n_items: usize,
+	n_items:usize,
 }
 
 impl super::View for ScrollStickTo {
-	fn ui(&mut self, ui: &mut Ui) {
-		ui.label("Rows enter from the bottom, we want the scroll handle to start and stay at bottom unless moved");
+	fn ui(&mut self, ui:&mut Ui) {
+		ui.label(
+			"Rows enter from the bottom, we want the scroll handle to start and stay at bottom \
+			 unless moved",
+		);
 
 		ui.add_space(4.0);
 

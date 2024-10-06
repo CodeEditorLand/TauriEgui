@@ -41,31 +41,31 @@ pub enum Item<'a> {
 #[derive(Copy, Clone, Debug, Default, Eq, PartialEq)]
 pub struct Style {
 	/// # heading (large text)
-	pub heading: bool,
+	pub heading:bool,
 
 	/// > quoted (slightly dimmer color or other font style)
-	pub quoted: bool,
+	pub quoted:bool,
 
 	/// `code` (monospace, some other color)
-	pub code: bool,
+	pub code:bool,
 
 	/// self.strong* (emphasized, e.g. bold)
-	pub strong: bool,
+	pub strong:bool,
 
 	/// _underline_
-	pub underline: bool,
+	pub underline:bool,
 
 	/// ~strikethrough~
-	pub strikethrough: bool,
+	pub strikethrough:bool,
 
 	/// /italics/
-	pub italics: bool,
+	pub italics:bool,
 
 	/// $small$
-	pub small: bool,
+	pub small:bool,
 
 	/// ^raised^
-	pub raised: bool,
+	pub raised:bool,
 }
 
 /// Parser for the `EasyMark` markup language.
@@ -75,25 +75,21 @@ pub struct Style {
 /// # Example:
 /// ```
 /// # use egui_demo_lib::easy_mark::parser::Parser;
-/// for item in Parser::new("Hello *world*!") {
-/// }
-///
+/// for item in Parser::new("Hello *world*!") {}
 /// ```
 pub struct Parser<'a> {
 	/// The remainder of the input text
-	s: &'a str,
+	s:&'a str,
 
 	/// Are we at the start of a line?
-	start_of_line: bool,
+	start_of_line:bool,
 
 	/// Current self.style. Reset after a newline.
-	style: Style,
+	style:Style,
 }
 
 impl<'a> Parser<'a> {
-	pub fn new(s: &'a str) -> Self {
-		Self { s, start_of_line: true, style: Style::default() }
-	}
+	pub fn new(s:&'a str) -> Self { Self { s, start_of_line:true, style:Style::default() } }
 
 	/// `1. `, `42. ` etc.
 	fn numbered_list(&mut self) -> Option<Item<'a>> {
@@ -328,12 +324,12 @@ impl<'a> Iterator for Parser<'a> {
 
 #[test]
 fn test_easy_mark_parser() {
-	let items: Vec<_> = Parser::new("~strikethrough `code`~").collect();
+	let items:Vec<_> = Parser::new("~strikethrough `code`~").collect();
 	assert_eq!(
 		items,
 		vec![
-			Item::Text(Style { strikethrough: true, ..Default::default() }, "strikethrough "),
-			Item::Text(Style { code: true, strikethrough: true, ..Default::default() }, "code"),
+			Item::Text(Style { strikethrough:true, ..Default::default() }, "strikethrough "),
+			Item::Text(Style { code:true, strikethrough:true, ..Default::default() }, "code"),
 		]
 	);
 }

@@ -1,6 +1,6 @@
 use egui::*;
 
-pub fn drag_source(ui: &mut Ui, id: Id, body: impl FnOnce(&mut Ui)) {
+pub fn drag_source(ui:&mut Ui, id:Id, body:impl FnOnce(&mut Ui)) {
 	let is_being_dragged = ui.memory().is_being_dragged(id);
 
 	if !is_being_dragged {
@@ -33,9 +33,9 @@ pub fn drag_source(ui: &mut Ui, id: Id, body: impl FnOnce(&mut Ui)) {
 }
 
 pub fn drop_target<R>(
-	ui: &mut Ui,
-	can_accept_what_is_being_dragged: bool,
-	body: impl FnOnce(&mut Ui) -> R,
+	ui:&mut Ui,
+	can_accept_what_is_being_dragged:bool,
+	body:impl FnOnce(&mut Ui) -> R,
 ) -> InnerResponse<R> {
 	let is_being_dragged = ui.memory().is_anything_being_dragged();
 
@@ -65,7 +65,7 @@ pub fn drop_target<R>(
 
 	ui.painter().set(
 		where_to_put_background,
-		epaint::RectShape { rounding: style.rounding, fill, stroke, rect },
+		epaint::RectShape { rounding:style.rounding, fill, stroke, rect },
 	);
 
 	InnerResponse::new(ret, response)
@@ -75,13 +75,13 @@ pub fn drop_target<R>(
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 pub struct DragAndDropDemo {
 	/// columns with items
-	columns: Vec<Vec<String>>,
+	columns:Vec<Vec<String>>,
 }
 
 impl Default for DragAndDropDemo {
 	fn default() -> Self {
 		Self {
-			columns: vec![
+			columns:vec![
 				vec!["Item A", "Item B", "Item C"],
 				vec!["Item D", "Item E"],
 				vec!["Item F", "Item G", "Item H"],
@@ -94,11 +94,9 @@ impl Default for DragAndDropDemo {
 }
 
 impl super::Demo for DragAndDropDemo {
-	fn name(&self) -> &'static str {
-		"✋ Drag and Drop"
-	}
+	fn name(&self) -> &'static str { "✋ Drag and Drop" }
 
-	fn show(&mut self, ctx: &Context, open: &mut bool) {
+	fn show(&mut self, ctx:&Context, open:&mut bool) {
 		use super::View as _;
 		Window::new(self.name())
 			.open(open)
@@ -110,7 +108,7 @@ impl super::Demo for DragAndDropDemo {
 }
 
 impl super::View for DragAndDropDemo {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		ui.label("This is a proof-of-concept of drag-and-drop in egui.");
 		ui.label("Drag items between columns.");
 

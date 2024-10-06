@@ -3,16 +3,16 @@ use egui::{text_edit::CCursorRange, *};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize, serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct EasyMarkEditor {
-	code: String,
-	highlight_editor: bool,
-	show_rendered: bool,
+	code:String,
+	highlight_editor:bool,
+	show_rendered:bool,
 
 	#[cfg_attr(feature = "serde", serde(skip))]
-	highlighter: crate::easy_mark::MemoizedEasymarkHighlighter,
+	highlighter:crate::easy_mark::MemoizedEasymarkHighlighter,
 }
 
 impl PartialEq for EasyMarkEditor {
-	fn eq(&self, other: &Self) -> bool {
+	fn eq(&self, other:&Self) -> bool {
 		(&self.code, self.highlight_editor, self.show_rendered)
 			== (&other.code, other.highlight_editor, other.show_rendered)
 	}
@@ -21,16 +21,16 @@ impl PartialEq for EasyMarkEditor {
 impl Default for EasyMarkEditor {
 	fn default() -> Self {
 		Self {
-			code: DEFAULT_CODE.trim().to_owned(),
-			highlight_editor: true,
-			show_rendered: true,
-			highlighter: Default::default(),
+			code:DEFAULT_CODE.trim().to_owned(),
+			highlight_editor:true,
+			show_rendered:true,
+			highlighter:Default::default(),
 		}
 	}
 }
 
 impl EasyMarkEditor {
-	pub fn panels(&mut self, ctx: &egui::Context) {
+	pub fn panels(&mut self, ctx:&egui::Context) {
 		egui::TopBottomPanel::bottom("easy_mark_bottom").show(ctx, |ui| {
 			let layout = egui::Layout::top_down(egui::Align::Center).with_main_justify(true);
 			ui.allocate_ui_with_layout(ui.available_size(), layout, |ui| {
@@ -43,7 +43,7 @@ impl EasyMarkEditor {
 		});
 	}
 
-	pub fn ui(&mut self, ui: &mut egui::Ui) {
+	pub fn ui(&mut self, ui:&mut egui::Ui) {
 		egui::Grid::new("controls").show(ui, |ui| {
 			let _ = ui.button("Hotkeys").on_hover_ui(nested_hotkeys_ui);
 			ui.checkbox(&mut self.show_rendered, "Show rendered");
@@ -68,11 +68,11 @@ impl EasyMarkEditor {
 		}
 	}
 
-	fn editor_ui(&mut self, ui: &mut egui::Ui) {
+	fn editor_ui(&mut self, ui:&mut egui::Ui) {
 		let Self { code, highlighter, .. } = self;
 
 		let response = if self.highlight_editor {
-			let mut layouter = |ui: &egui::Ui, easymark: &str, wrap_width: f32| {
+			let mut layouter = |ui:&egui::Ui, easymark:&str, wrap_width:f32| {
 				let mut layout_job = highlighter.highlight(ui.style(), easymark);
 				layout_job.wrap.max_width = wrap_width;
 				ui.fonts().layout_job(layout_job)
@@ -100,7 +100,7 @@ impl EasyMarkEditor {
 	}
 }
 
-fn nested_hotkeys_ui(ui: &mut egui::Ui) {
+fn nested_hotkeys_ui(ui:&mut egui::Ui) {
 	let _ = ui.label("CTRL+B *bold*");
 	let _ = ui.label("CTRL+N `code`");
 	let _ = ui.label("CTRL+I /italics/");
@@ -111,7 +111,7 @@ fn nested_hotkeys_ui(ui: &mut egui::Ui) {
 	let _ = ui.label("ALT+SHIFT+E two spaces"); // Placeholder for tab indent
 }
 
-fn shortcuts(ui: &Ui, code: &mut dyn TextBuffer, ccursor_range: &mut CCursorRange) -> bool {
+fn shortcuts(ui:&Ui, code:&mut dyn TextBuffer, ccursor_range:&mut CCursorRange) -> bool {
 	let mut any_change = false;
 	if ui.input_mut().consume_key(egui::Modifiers::ALT_SHIFT, Key::E) {
 		// This is a placeholder till we can indent the active line
@@ -140,11 +140,7 @@ fn shortcuts(ui: &Ui, code: &mut dyn TextBuffer, ccursor_range: &mut CCursorRang
 }
 
 /// E.g. toggle *strong* with `toggle_surrounding(&mut text, &mut cursor, "*")`
-fn toggle_surrounding(
-	code: &mut dyn TextBuffer,
-	ccursor_range: &mut CCursorRange,
-	surrounding: &str,
-) {
+fn toggle_surrounding(code:&mut dyn TextBuffer, ccursor_range:&mut CCursorRange, surrounding:&str) {
 	let [primary, secondary] = ccursor_range.sorted();
 
 	let surrounding_ccount = surrounding.chars().count();
@@ -170,7 +166,7 @@ fn toggle_surrounding(
 
 // ----------------------------------------------------------------------------
 
-const DEFAULT_CODE: &str = r#"
+const DEFAULT_CODE:&str = r#"
 # EasyMark
 EasyMark is a markup language, designed for extreme simplicity.
 

@@ -7,26 +7,25 @@ use egui_extras::{Size, StripBuilder};
 pub struct StripDemo {}
 
 impl super::Demo for StripDemo {
-	fn name(&self) -> &'static str {
-		"▣ Strip Demo"
-	}
+	fn name(&self) -> &'static str { "▣ Strip Demo" }
 
-	fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
-		egui::Window::new(self.name()).open(open).resizable(true).default_width(400.0).show(
-			ctx,
-			|ui| {
+	fn show(&mut self, ctx:&egui::Context, open:&mut bool) {
+		egui::Window::new(self.name())
+			.open(open)
+			.resizable(true)
+			.default_width(400.0)
+			.show(ctx, |ui| {
 				use super::View as _;
 				self.ui(ui);
-			},
-		);
+			});
 	}
 }
 
 impl super::View for StripDemo {
-	fn ui(&mut self, ui: &mut egui::Ui) {
+	fn ui(&mut self, ui:&mut egui::Ui) {
 		let dark_mode = ui.visuals().dark_mode;
 		let faded_color = ui.visuals().window_fill();
-		let faded_color = |color: Color32| -> Color32 {
+		let faded_color = |color:Color32| -> Color32 {
 			use egui::Rgba;
 			let t = if dark_mode { 0.95 } else { 0.8 };
 			egui::lerp(Rgba::from(color)..=Rgba::from(faded_color), t).into()

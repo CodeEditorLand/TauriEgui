@@ -22,19 +22,9 @@ pub fn code_view_ui(ui:&mut egui::Ui, mut code:&str) {
 }
 
 /// Memoized Code highlighting
-pub fn highlight(
-	ctx:&egui::Context,
-	theme:&CodeTheme,
-	code:&str,
-	language:&str,
-) -> LayoutJob {
-	impl egui::util::cache::ComputerMut<(&CodeTheme, &str, &str), LayoutJob>
-		for Highlighter
-	{
-		fn compute(
-			&mut self,
-			(theme, code, lang):(&CodeTheme, &str, &str),
-		) -> LayoutJob {
+pub fn highlight(ctx:&egui::Context, theme:&CodeTheme, code:&str, language:&str) -> LayoutJob {
+	impl egui::util::cache::ComputerMut<(&CodeTheme, &str, &str), LayoutJob> for Highlighter {
+		fn compute(&mut self, (theme, code, lang):(&CodeTheme, &str, &str)) -> LayoutJob {
 			self.highlight(theme, code, lang)
 		}
 	}
@@ -121,9 +111,7 @@ impl SyntectTheme {
 			| Self::Base16OceanDark
 			| Self::SolarizedDark => true,
 
-			Self::Base16OceanLight
-			| Self::InspiredGitHub
-			| Self::SolarizedLight => false,
+			Self::Base16OceanLight | Self::InspiredGitHub | Self::SolarizedLight => false,
 		}
 	}
 }
@@ -152,9 +140,7 @@ impl CodeTheme {
 
 	pub fn from_memory(ctx:&egui::Context) -> Self {
 		if ctx.style().visuals.dark_mode {
-			ctx.data()
-				.get_persisted(egui::Id::new("dark"))
-				.unwrap_or_else(CodeTheme::dark)
+			ctx.data().get_persisted(egui::Id::new("dark")).unwrap_or_else(CodeTheme::dark)
 		} else {
 			ctx.data()
 				.get_persisted(egui::Id::new("light"))
@@ -173,13 +159,9 @@ impl CodeTheme {
 
 #[cfg(feature = "syntect")]
 impl CodeTheme {
-	pub fn dark() -> Self {
-		Self { dark_mode:true, syntect_theme:SyntectTheme::Base16MochaDark }
-	}
+	pub fn dark() -> Self { Self { dark_mode:true, syntect_theme:SyntectTheme::Base16MochaDark } }
 
-	pub fn light() -> Self {
-		Self { dark_mode:false, syntect_theme:SyntectTheme::SolarizedLight }
-	}
+	pub fn light() -> Self { Self { dark_mode:false, syntect_theme:SyntectTheme::SolarizedLight } }
 
 	pub fn ui(&mut self, ui:&mut egui::Ui) {
 		egui::widgets::global_dark_light_mode_buttons(ui);
@@ -230,9 +212,8 @@ impl CodeTheme {
 	pub fn ui(&mut self, ui:&mut egui::Ui) {
 		ui.horizontal_top(|ui| {
 			let selected_id = egui::Id::null();
-			let mut selected_tt:TokenType = *ui
-				.data()
-				.get_persisted_mut_or(selected_id, TokenType::Comment);
+			let mut selected_tt:TokenType =
+				*ui.data().get_persisted_mut_or(selected_id, TokenType::Comment);
 
 			ui.vertical(|ui| {
 				ui.set_width(150.0);
@@ -252,26 +233,16 @@ impl CodeTheme {
 						// (TokenType::Whitespace, "whitespace"),
 					] {
 						let format = &mut self.formats[tt];
-						ui.style_mut().override_font_id =
-							Some(format.font_id.clone());
-						ui.visuals_mut().override_text_color =
-							Some(format.color);
+						ui.style_mut().override_font_id = Some(format.font_id.clone());
+						ui.visuals_mut().override_text_color = Some(format.color);
 						ui.radio_value(&mut selected_tt, tt, tt_name);
 					}
 				});
 
-				let reset_value = if self.dark_mode {
-					CodeTheme::dark()
-				} else {
-					CodeTheme::light()
-				};
+				let reset_value =
+					if self.dark_mode { CodeTheme::dark() } else { CodeTheme::light() };
 
-				if ui
-					.add_enabled(
-						*self != reset_value,
-						egui::Button::new("Reset theme"),
-					)
-					.clicked()
+				if ui.add_enabled(*self != reset_value, egui::Button::new("Reset theme")).clicked()
 				{
 					*self = reset_value;
 				}
@@ -285,8 +256,7 @@ impl CodeTheme {
 				.inner_margin(egui::Vec2::splat(2.0))
 				.show(ui, |ui| {
 					// ui.group(|ui| {
-					ui.style_mut().override_text_style =
-						Some(egui::TextStyle::Small);
+					ui.style_mut().override_text_style = Some(egui::TextStyle::Small);
 					ui.spacing_mut().slider_width = 128.0; // Controls color picker size
 					egui::widgets::color_picker::color_picker_color32(
 						ui,
@@ -335,17 +305,8 @@ impl Highlighter {
 		})
 	}
 
-	fn highlight_impl(
-		&self,
-		theme:&CodeTheme,
-		text:&str,
-		language:&str,
-	) -> Option<LayoutJob> {
-		use syntect::{
-			easy::HighlightLines,
-			highlighting::FontStyle,
-			util::LinesWithEndings,
-		};
+	fn highlight_impl(&self, theme:&CodeTheme, text:&str, language:&str) -> Option<LayoutJob> {
+		use syntect::{easy::HighlightLines, highlighting::FontStyle, util::LinesWithEndings};
 
 		let syntax = self
 			.ps
@@ -407,12 +368,7 @@ struct Highlighter {}
 #[cfg(not(feature = "syntect"))]
 impl Highlighter {
 	#[allow(clippy::unused_self, clippy::unnecessary_wraps)]
-	fn highlight(
-		&self,
-		theme:&CodeTheme,
-		mut text:&str,
-		_language:&str,
-	) -> LayoutJob {
+	fn highlight(&self, theme:&CodeTheme, mut text:&str, _language:&str) -> LayoutJob {
 		// Extremely simple syntax highlighter for when we compile without
 		// syntect
 
@@ -421,11 +377,7 @@ impl Highlighter {
 		while !text.is_empty() {
 			if text.starts_with("//") {
 				let end = text.find('\n').unwrap_or(text.len());
-				job.append(
-					&text[..end],
-					0.0,
-					theme.formats[TokenType::Comment].clone(),
-				);
+				job.append(&text[..end], 0.0, theme.formats[TokenType::Comment].clone());
 				text = &text[end..];
 			} else if text.starts_with('"') {
 				let end = text[1..]
@@ -433,43 +385,27 @@ impl Highlighter {
 					.map(|i| i + 2)
 					.or_else(|| text.find('\n'))
 					.unwrap_or(text.len());
-				job.append(
-					&text[..end],
-					0.0,
-					theme.formats[TokenType::StringLiteral].clone(),
-				);
+				job.append(&text[..end], 0.0, theme.formats[TokenType::StringLiteral].clone());
 				text = &text[end..];
 			} else if text.starts_with(|c:char| c.is_ascii_alphanumeric()) {
 				let end = text[1..]
 					.find(|c:char| !c.is_ascii_alphanumeric())
 					.map_or_else(|| text.len(), |i| i + 1);
 				let word = &text[..end];
-				let tt = if is_keyword(word) {
-					TokenType::Keyword
-				} else {
-					TokenType::Literal
-				};
+				let tt = if is_keyword(word) { TokenType::Keyword } else { TokenType::Literal };
 				job.append(word, 0.0, theme.formats[tt].clone());
 				text = &text[end..];
 			} else if text.starts_with(|c:char| c.is_ascii_whitespace()) {
 				let end = text[1..]
 					.find(|c:char| !c.is_ascii_whitespace())
 					.map_or_else(|| text.len(), |i| i + 1);
-				job.append(
-					&text[..end],
-					0.0,
-					theme.formats[TokenType::Whitespace].clone(),
-				);
+				job.append(&text[..end], 0.0, theme.formats[TokenType::Whitespace].clone());
 				text = &text[end..];
 			} else {
 				let mut it = text.char_indices();
 				it.next();
 				let end = it.next().map_or(text.len(), |(idx, _chr)| idx);
-				job.append(
-					&text[..end],
-					0.0,
-					theme.formats[TokenType::Punctuation].clone(),
-				);
+				job.append(&text[..end], 0.0, theme.formats[TokenType::Punctuation].clone());
 				text = &text[end..];
 			}
 		}

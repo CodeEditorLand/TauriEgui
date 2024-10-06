@@ -13,13 +13,7 @@ use tauri::{
 	UserAttentionType,
 };
 use tauri_runtime::{Error, UserEvent};
-use tauri_runtime_wry::{
-	Message,
-	MonitorHandleWrapper,
-	WebviewId,
-	WindowMessage,
-	WryIcon,
-};
+use tauri_runtime_wry::{Message, MonitorHandleWrapper, WebviewId, WindowMessage, WryIcon};
 
 use super::Context;
 
@@ -35,10 +29,7 @@ macro_rules! window_getter {
 		$self.context.inner.run_threaded(|main_thread| {
 			let message = Message::Window($self.id, $message(tx));
 			if main_thread.is_some() {
-				super::handle_user_message(
-					&message,
-					&$self.context.main_thread.windows,
-				);
+				super::handle_user_message(&message, &$self.context.main_thread.windows);
 				Ok(())
 			} else {
 				$self
@@ -50,9 +41,7 @@ macro_rules! window_getter {
 					.map_err(tauri::Error::from)
 			}
 		})?;
-		rx.recv()
-			.map_err(|_| Error::FailedToReceiveMessage)
-			.map_err(tauri::Error::from)
+		rx.recv().map_err(|_| Error::FailedToReceiveMessage).map_err(tauri::Error::from)
 	}};
 }
 
@@ -60,9 +49,7 @@ macro_rules! window_getter {
 impl<T:UserEvent> Window<T> {
 	/// Returns the scale factor that can be used to map logical pixels to
 	/// physical pixels, and vice versa.
-	pub fn scale_factor(&self) -> Result<f64> {
-		window_getter!(self, WindowMessage::ScaleFactor)
-	}
+	pub fn scale_factor(&self) -> Result<f64> { window_getter!(self, WindowMessage::ScaleFactor) }
 
 	/// Returns the position of the top-left hand corner of the window's client
 	/// area relative to the top-left hand corner of the desktop.
@@ -98,24 +85,16 @@ impl<T:UserEvent> Window<T> {
 	}
 
 	/// Gets the window's current maximized state.
-	pub fn is_maximized(&self) -> Result<bool> {
-		window_getter!(self, WindowMessage::IsMaximized)
-	}
+	pub fn is_maximized(&self) -> Result<bool> { window_getter!(self, WindowMessage::IsMaximized) }
 
 	/// Gets the window’s current decoration state.
-	pub fn is_decorated(&self) -> Result<bool> {
-		window_getter!(self, WindowMessage::IsDecorated)
-	}
+	pub fn is_decorated(&self) -> Result<bool> { window_getter!(self, WindowMessage::IsDecorated) }
 
 	/// Gets the window’s current resizable state.
-	pub fn is_resizable(&self) -> Result<bool> {
-		window_getter!(self, WindowMessage::IsResizable)
-	}
+	pub fn is_resizable(&self) -> Result<bool> { window_getter!(self, WindowMessage::IsResizable) }
 
 	/// Gets the window's current vibility state.
-	pub fn is_visible(&self) -> Result<bool> {
-		window_getter!(self, WindowMessage::IsVisible)
-	}
+	pub fn is_visible(&self) -> Result<bool> { window_getter!(self, WindowMessage::IsVisible) }
 
 	/// Returns the monitor on which the window currently resides.
 	///
@@ -150,9 +129,7 @@ impl<T:UserEvent> Window<T> {
 	///
 	/// - **macOS**: Only supported on macOS 10.14+.
 	/// - **Linux**: Not implemented, always return [`Theme::Light`].
-	pub fn theme(&self) -> Result<Theme> {
-		window_getter!(self, WindowMessage::Theme)
-	}
+	pub fn theme(&self) -> Result<Theme> { window_getter!(self, WindowMessage::Theme) }
 }
 
 /// Window setters and actions.
@@ -161,10 +138,7 @@ impl<T:UserEvent> Window<T> {
 		self.context.inner.run_threaded(|main_thread| {
 			let message = Message::Window(self.id, message);
 			if main_thread.is_some() {
-				super::handle_user_message(
-					&message,
-					&self.context.main_thread.windows,
-				);
+				super::handle_user_message(&message, &self.context.main_thread.windows);
 				Ok(())
 			} else {
 				self.context
@@ -177,9 +151,7 @@ impl<T:UserEvent> Window<T> {
 	}
 
 	/// Centers the window.
-	pub fn center(&self) -> Result<()> {
-		self.send_event(WindowMessage::Center)
-	}
+	pub fn center(&self) -> Result<()> { self.send_event(WindowMessage::Center) }
 
 	/// Requests user attention to the window, this has no effect if the
 	/// application is already focused. How requesting for user attention
@@ -193,13 +165,8 @@ impl<T:UserEvent> Window<T> {
 	///
 	/// - **macOS:** `None` has no effect.
 	/// - **Linux:** Urgency levels have the same effect.
-	pub fn request_user_attention(
-		&self,
-		request_type:Option<UserAttentionType>,
-	) -> Result<()> {
-		self.send_event(WindowMessage::RequestUserAttention(
-			request_type.map(Into::into),
-		))
+	pub fn request_user_attention(&self, request_type:Option<UserAttentionType>) -> Result<()> {
+		self.send_event(WindowMessage::RequestUserAttention(request_type.map(Into::into)))
 	}
 
 	/// Determines if this window should be resizable.
@@ -213,24 +180,16 @@ impl<T:UserEvent> Window<T> {
 	}
 
 	/// Maximizes this window.
-	pub fn maximize(&self) -> Result<()> {
-		self.send_event(WindowMessage::Maximize)
-	}
+	pub fn maximize(&self) -> Result<()> { self.send_event(WindowMessage::Maximize) }
 
 	/// Un-maximizes this window.
-	pub fn unmaximize(&self) -> Result<()> {
-		self.send_event(WindowMessage::Unmaximize)
-	}
+	pub fn unmaximize(&self) -> Result<()> { self.send_event(WindowMessage::Unmaximize) }
 
 	/// Minimizes this window.
-	pub fn minimize(&self) -> Result<()> {
-		self.send_event(WindowMessage::Minimize)
-	}
+	pub fn minimize(&self) -> Result<()> { self.send_event(WindowMessage::Minimize) }
 
 	/// Un-minimizes this window.
-	pub fn unminimize(&self) -> Result<()> {
-		self.send_event(WindowMessage::Unminimize)
-	}
+	pub fn unminimize(&self) -> Result<()> { self.send_event(WindowMessage::Unminimize) }
 
 	/// Show this window.
 	pub fn show(&self) -> Result<()> { self.send_event(WindowMessage::Show) }
@@ -289,9 +248,7 @@ impl<T:UserEvent> Window<T> {
 	}
 
 	/// Bring the window to front and focus.
-	pub fn set_focus(&self) -> Result<()> {
-		self.send_event(WindowMessage::SetFocus)
-	}
+	pub fn set_focus(&self) -> Result<()> { self.send_event(WindowMessage::SetFocus) }
 
 	/// Sets this window' icon.
 	pub fn set_icon(&self, icon:Icon) -> Result<()> {
@@ -341,15 +298,10 @@ impl<T:UserEvent> Window<T> {
 	}
 
 	/// Changes the position of the cursor in window coordinates.
-	pub fn set_cursor_position<Pos:Into<Position>>(
-		&self,
-		position:Pos,
-	) -> Result<()> {
+	pub fn set_cursor_position<Pos:Into<Position>>(&self, position:Pos) -> Result<()> {
 		self.send_event(WindowMessage::SetCursorPosition(position.into()))
 	}
 
 	/// Starts dragging the window.
-	pub fn start_dragging(&self) -> Result<()> {
-		self.send_event(WindowMessage::DragWindow)
-	}
+	pub fn start_dragging(&self) -> Result<()> { self.send_event(WindowMessage::DragWindow) }
 }

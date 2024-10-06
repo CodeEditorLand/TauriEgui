@@ -4,21 +4,21 @@ use egui::*;
 #[cfg_attr(feature = "serde", serde(default))]
 pub struct Painting {
 	/// in 0-1 normalized coordinates
-	lines: Vec<Vec<Pos2>>,
-	stroke: Stroke,
+	lines:Vec<Vec<Pos2>>,
+	stroke:Stroke,
 }
 
 impl Default for Painting {
 	fn default() -> Self {
 		Self {
-			lines: Default::default(),
-			stroke: Stroke::new(1.0, Color32::from_rgb(25, 200, 100)),
+			lines:Default::default(),
+			stroke:Stroke::new(1.0, Color32::from_rgb(25, 200, 100)),
 		}
 	}
 }
 
 impl Painting {
-	pub fn ui_control(&mut self, ui: &mut egui::Ui) -> egui::Response {
+	pub fn ui_control(&mut self, ui:&mut egui::Ui) -> egui::Response {
 		ui.horizontal(|ui| {
 			egui::stroke_ui(ui, &mut self.stroke, "Stroke");
 			ui.separator();
@@ -29,7 +29,7 @@ impl Painting {
 		.response
 	}
 
-	pub fn ui_content(&mut self, ui: &mut Ui) -> egui::Response {
+	pub fn ui_content(&mut self, ui:&mut Ui) -> egui::Response {
 		let (mut response, painter) =
 			ui.allocate_painter(ui.available_size_before_wrap(), Sense::drag());
 
@@ -59,7 +59,7 @@ impl Painting {
 		let mut shapes = vec![];
 		for line in &self.lines {
 			if line.len() >= 2 {
-				let points: Vec<Pos2> = line.iter().map(|p| to_screen * *p).collect();
+				let points:Vec<Pos2> = line.iter().map(|p| to_screen * *p).collect();
 				shapes.push(egui::Shape::line(points, self.stroke));
 			}
 		}
@@ -70,11 +70,9 @@ impl Painting {
 }
 
 impl super::Demo for Painting {
-	fn name(&self) -> &'static str {
-		"🖊 Painting"
-	}
+	fn name(&self) -> &'static str { "🖊 Painting" }
 
-	fn show(&mut self, ctx: &Context, open: &mut bool) {
+	fn show(&mut self, ctx:&Context, open:&mut bool) {
 		use super::View as _;
 		Window::new(self.name())
 			.open(open)
@@ -85,7 +83,7 @@ impl super::Demo for Painting {
 }
 
 impl super::View for Painting {
-	fn ui(&mut self, ui: &mut Ui) {
+	fn ui(&mut self, ui:&mut Ui) {
 		ui.vertical_centered(|ui| {
 			ui.add(crate::egui_github_link_file!());
 		});
