@@ -68,6 +68,7 @@ impl super::View for FontBook {
     });
 
     let filter = &self.filter;
+
     let named_chars = self
       .named_chars
       .entry(self.font_id.family.clone())

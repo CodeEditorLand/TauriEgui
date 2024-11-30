@@ -16,7 +16,9 @@ impl Default for CodeExample {
 impl CodeExample {
   fn samples_in_grid(&mut self, ui: &mut egui::Ui) {
     show_code(ui, r#"ui.heading("Code samples");"#);
+
     ui.heading("Code samples");
+
     ui.end_row();
 
     show_code(
@@ -25,6 +27,7 @@ impl CodeExample {
             // Putting things on the same line using ui.horizontal:
             ui.horizontal(|ui| {
                 ui.label("Your name: ");
+
                 ui.text_edit_singleline(&mut self.name);
             });"#,
     );
@@ -33,13 +36,16 @@ impl CodeExample {
       ui.label("Your name: ");
       ui.text_edit_singleline(&mut self.name);
     });
+
     ui.end_row();
 
     show_code(
       ui,
       r#"egui::Slider::new(&mut self.age, 0..=120).text("age")"#,
     );
+
     ui.add(egui::Slider::new(&mut self.age, 0..=120).text("age"));
+
     ui.end_row();
 
     show_code(
@@ -49,16 +55,20 @@ impl CodeExample {
                 self.age += 1;
             }"#,
     );
+
     if ui.button("Click each year").clicked() {
       self.age += 1;
     }
+
     ui.end_row();
 
     show_code(
       ui,
       r#"ui.label(format!("Hello '{}', age {}", self.name, self.age));"#,
     );
+
     ui.label(format!("Hello '{}', age {}", self.name, self.age));
+
     ui.end_row();
   }
 }
@@ -70,6 +80,7 @@ impl super::Demo for CodeExample {
 
   fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
     use super::View;
+
     egui::Window::new(self.name())
       .open(open)
       .default_size([800.0, 400.0])
@@ -126,6 +137,7 @@ impl CodeExample {
     ui.separator();
 
     let mut theme = crate::syntax_highlighting::CodeTheme::from_memory(ui.ctx());
+
     ui.collapsing("Theme", |ui| {
       theme.ui(ui);
       theme.store_in_memory(ui.ctx());
@@ -150,11 +162,15 @@ fn remove_leading_indentation(code: &str) -> String {
   let mut code = code;
   while !code.is_empty() {
     let indent = code.bytes().take_while(is_indent).count();
+
     let start = first_line_indent.min(indent);
+
     let end = code
       .find('\n')
       .map_or_else(|| code.len(), |endline| endline + 1);
+
     out += &code[start..end];
+
     code = &code[end..];
   }
   out

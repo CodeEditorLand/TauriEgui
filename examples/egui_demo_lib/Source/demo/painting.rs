@@ -37,6 +37,7 @@ impl Painting {
       Rect::from_min_size(Pos2::ZERO, response.rect.square_proportions()),
       response.rect,
     );
+
     let from_screen = to_screen.inverse();
 
     if self.lines.is_empty() {
@@ -49,6 +50,7 @@ impl Painting {
       let canvas_pos = from_screen * pointer_pos;
       if current_line.last() != Some(&canvas_pos) {
         current_line.push(canvas_pos);
+
         response.mark_changed();
       }
     } else if !current_line.is_empty() {
@@ -57,12 +59,15 @@ impl Painting {
     }
 
     let mut shapes = vec![];
+
     for line in &self.lines {
       if line.len() >= 2 {
         let points: Vec<Pos2> = line.iter().map(|p| to_screen * *p).collect();
+
         shapes.push(egui::Shape::line(points, self.stroke));
       }
     }
+
     painter.extend(shapes);
 
     response
@@ -76,6 +81,7 @@ impl super::Demo for Painting {
 
   fn show(&mut self, ctx: &Context, open: &mut bool) {
     use super::View as _;
+
     Window::new(self.name())
       .open(open)
       .default_size(vec2(512.0, 512.0))
@@ -89,8 +95,11 @@ impl super::View for Painting {
     ui.vertical_centered(|ui| {
       ui.add(crate::egui_github_link_file!());
     });
+
     self.ui_control(ui);
+
     ui.label("Paint with your mouse/touch!");
+
     Frame::canvas(ui.style()).show(ui, |ui| {
       self.ui_content(ui);
     });

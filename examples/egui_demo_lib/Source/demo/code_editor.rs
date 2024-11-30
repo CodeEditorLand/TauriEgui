@@ -28,6 +28,7 @@ impl super::Demo for CodeEditor {
 
   fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
     use super::View as _;
+
     egui::Window::new(self.name())
       .open(open)
       .default_height(500.0)
@@ -48,29 +49,40 @@ impl super::View for CodeEditor {
     if cfg!(feature = "syntect") {
       ui.horizontal(|ui| {
         ui.label("Language:");
+
         ui.text_edit_singleline(language);
       });
       ui.horizontal_wrapped(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
+
         ui.label("Syntax highlighting powered by ");
+
         ui.hyperlink_to("syntect", "https://github.com/trishume/syntect");
+
         ui.label(".");
       });
     } else {
       ui.horizontal_wrapped(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
+
         ui.label("Compile the demo with the ");
+
         ui.code("syntax_highlighting");
+
         ui.label(" feature to enable more accurate syntax highlighting using ");
+
         ui.hyperlink_to("syntect", "https://github.com/trishume/syntect");
+
         ui.label(".");
       });
     }
 
     let mut theme = crate::syntax_highlighting::CodeTheme::from_memory(ui.ctx());
+
     ui.collapsing("Theme", |ui| {
       ui.group(|ui| {
         theme.ui(ui);
+
         theme.clone().store_in_memory(ui.ctx());
       });
     });

@@ -16,7 +16,9 @@ pub fn easy_mark_it<'em>(ui: &mut Ui, items: impl Iterator<Item = easy_mark::Ite
 
   ui.allocate_ui_with_layout(initial_size, layout, |ui| {
     ui.spacing_mut().item_spacing.x = 0.0;
+
     let row_height = ui.text_style_height(&TextStyle::Body);
+
     ui.set_row_height(row_height);
 
     for item in items {
@@ -40,6 +42,7 @@ pub fn item_ui(ui: &mut Ui, item: easy_mark::Item<'_>) {
     easy_mark::Item::Text(style, text) => {
       ui.label(rich_text_from_style(text, &style));
     }
+
     easy_mark::Item::Hyperlink(style, text, url) => {
       let label = rich_text_from_style(text, &style);
       ui.add(Hyperlink::from_label_and_url(label, url));
@@ -48,10 +51,12 @@ pub fn item_ui(ui: &mut Ui, item: easy_mark::Item<'_>) {
     easy_mark::Item::Separator => {
       ui.add(Separator::default().horizontal());
     }
+
     easy_mark::Item::Indentation(indent) => {
       let indent = indent as f32 * one_indent;
       ui.allocate_exact_size(vec2(indent, row_height), Sense::hover());
     }
+
     easy_mark::Item::QuoteIndent => {
       let rect = ui
         .allocate_exact_size(vec2(2.0 * one_indent, row_height), Sense::hover())
@@ -62,16 +67,19 @@ pub fn item_ui(ui: &mut Ui, item: easy_mark::Item<'_>) {
         (1.0, ui.visuals().weak_text_color()),
       );
     }
+
     easy_mark::Item::BulletPoint => {
       ui.allocate_exact_size(vec2(one_indent, row_height), Sense::hover());
       bullet_point(ui, one_indent);
       ui.allocate_exact_size(vec2(one_indent, row_height), Sense::hover());
     }
+
     easy_mark::Item::NumberedPoint(number) => {
       let width = 3.0 * one_indent;
       numbered_point(ui, width, number);
       ui.allocate_exact_size(vec2(one_indent, row_height), Sense::hover());
     }
+
     easy_mark::Item::CodeBlock(_language, code) => {
       let where_to_put_background = ui.painter().add(Shape::Noop);
       let mut rect = ui.monospace(code).rect;

@@ -10,6 +10,7 @@ use tauri_egui::eframe;
 #[tauri::command]
 async fn open_native_window(egui_handle:State<'_, tauri_egui::EguiPluginHandle>) -> Result<(), ()> {
 	// let (egui_app, rx) = Layout::new();
+
 	let native_options = eframe::NativeOptions {
 		drag_and_drop_support:true,
 		initial_window_size:Some([1280.0, 1024.0].into()),
@@ -33,6 +34,7 @@ fn main() {
 		.invoke_handler(tauri::generate_handler![open_native_window])
 		.build(tauri::generate_context!("examples/demo/tauri.conf.json"))
 		.expect("error while building tauri application");
+
 	app.wry_plugin(tauri_egui::EguiPluginBuilder::new(app.handle()));
 
 	app.run(|_app, event| {

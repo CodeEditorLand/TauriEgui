@@ -118,21 +118,26 @@ impl<T:UserEvent> EguiPluginHandle<T> {
 	/// Fetch a single window by its label.
 	pub fn get_window(&self, label:&str) -> Option<Window<T>> {
 		let windows = self.context.main_thread.windows.lock().unwrap();
+
 		for (id, w) in &*windows {
 			if w.label == label {
 				return Some(Window { id:*id, context:self.context.clone() });
 			}
 		}
+
 		None
 	}
 
 	/// Fetch all managed windows.
 	pub fn windows(&self) -> HashMap<String, Window<T>> {
 		let windows = self.context.main_thread.windows.lock().unwrap();
+
 		let mut list = HashMap::new();
+
 		for (id, w) in &*windows {
 			list.insert(w.label.clone(), Window { id:*id, context:self.context.clone() });
 		}
+
 		list
 	}
 
@@ -160,6 +165,7 @@ impl<T:UserEvent> EguiPluginHandle<T> {
 				)
 			} else {
 				let (tx, rx) = channel();
+
 				let payload = CreateWindowPayload {
 					window_id,
 					label,
@@ -168,12 +174,15 @@ impl<T:UserEvent> EguiPluginHandle<T> {
 					native_options,
 					tx,
 				};
+
 				self.create_window_tx.send(payload).unwrap();
 				// force the event loop to receive a new event
 				let _ = self.context.inner.proxy.send_event(Message::Task(Box::new(move || {})));
+
 				rx.recv().unwrap()
 			}
 		})?;
+
 		Ok(Window { id:window_id, context:self.context.clone() })
 	}
 }
@@ -201,8 +210,10 @@ impl<T:UserEvent> Plugin<T> for EguiPlugin<T> {
 				payload.window_id,
 				proxy,
 			);
+
 			payload.tx.send(res).unwrap();
 		}
+
 		handle_gl_loop(
 			&self.context,
 			event,
@@ -313,12 +324,14 @@ pub fn create_gl_window<T:UserEvent>(
 	use eframe::native::epi_integration;
 
 	let storage = epi_integration::create_storage(&label);
+
 	let window_settings = epi_integration::load_window_settings(storage.as_deref());
 
 	let window_builder =
 		epi_integration::window_builder(&native_options, &window_settings).with_title(title);
 
 	use eframe::HardwareAcceleration;
+
 	let hardware_acceleration = match native_options.hardware_acceleration {
 		HardwareAcceleration::Required => Some(true),
 		HardwareAcceleration::Preferred => None,
@@ -341,10 +354,12 @@ pub fn create_gl_window<T:UserEvent>(
 	webview_id_map.insert(gl_window.window().id(), window_id);
 
 	let gl = unsafe { glow::Context::from_loader_function(|s| gl_window.get_proc_address(s)) };
+
 	let gl = std::sync::Arc::new(gl);
 
 	unsafe {
 		use glow::HasContext as _;
+
 		gl.enable(glow::FRAMEBUFFER_SRGB);
 	}
 
@@ -352,6 +367,7 @@ pub fn create_gl_window<T:UserEvent>(
 		egui_glow::Painter::new(gl.clone(), None, "").map_err(Error::FailedToCreatePainter)?;
 
 	let system_theme = native_options.system_theme();
+
 	let mut integration = epi_integration::EpiIntegration::new(
 		event_loop,
 		painter.max_texture_side(),
@@ -360,11 +376,14 @@ pub fn create_gl_window<T:UserEvent>(
 		storage,
 		Some(gl.clone()),
 	);
+
 	let theme = system_theme.unwrap_or(native_options.default_theme);
+
 	integration.egui_ctx.set_visuals(theme.egui_visuals());
 
 	{
 		let event_loop_proxy = egui::mutex::Mutex::new(proxy.clone());
+
 		integration.egui_ctx.set_request_repaint_callback(move || {
 			event_loop_proxy
 				.lock()
@@ -413,10 +432,15 @@ fn win_mac_gl_loop<T:UserEvent>(
 	is_focused:bool,
 ) -> bool {
 	let gl_window = &glutin_window_context.context;
+
 	let gl = &glutin_window_context.glow_context;
+
 	let app = &mut glutin_window_context.app;
+
 	let mut integration = glutin_window_context.integration.borrow_mut();
+
 	let mut painter = glutin_window_context.painter.borrow_mut();
+
 	let window = gl_window.window();
 
 	let mut paint = || {
@@ -450,9 +474,11 @@ fn win_mac_gl_loop<T:UserEvent>(
 
 		*control_flow = if integration.should_close() {
 			should_close = true;
+
 			ControlFlow::Wait
 		} else if repaint_after.is_zero() {
 			window.request_redraw();
+
 			ControlFlow::Poll
 		} else if let Some(repaint_after_instant) =
 			std::time::Instant::now().checked_add(repaint_after)
@@ -498,10 +524,14 @@ pub fn handle_gl_loop<T:UserEvent>(
 	is_focused:&mut bool,
 ) -> bool {
 	let mut prevent_default = false;
+
 	let Context { main_thread: MainThreadContext { windows, .. }, webview_id_map, .. } =
 		egui_context;
+
 	let EventLoopIterationContext { callback, .. } = context;
+
 	let has_egui_window = !windows.lock().unwrap().is_empty();
+
 	if has_egui_window {
 		let mut windows_lock = windows.lock().unwrap();
 
@@ -511,6 +541,7 @@ pub fn handle_gl_loop<T:UserEvent>(
 
 		for win in iter {
 			let mut should_close = false;
+
 			if let Some(glutin_window_context) = &mut win.inner {
 				should_close =
 					win_mac_gl_loop(control_flow, glutin_window_context, event, *is_focused);
@@ -530,11 +561,15 @@ pub fn handle_gl_loop<T:UserEvent>(
 
 					if let Some(window) = windows_lock.get_mut(&window_id) {
 						let label = &window.label;
+
 						let glutin_window_context = &mut window.inner;
+
 						let window_event_listeners = &window.window_event_listeners;
+
 						let handled = match event {
 							TaoWindowEvent::Focused(new_focused) => {
 								*is_focused = *new_focused;
+
 								false
 							},
 							TaoWindowEvent::Resized(physical_size) => {
@@ -549,6 +584,7 @@ pub fn handle_gl_loop<T:UserEvent>(
 										glutin_window_context.context.resize(*physical_size);
 									}
 								}
+
 								false
 							},
 							TaoWindowEvent::CloseRequested => {
@@ -563,28 +599,40 @@ pub fn handle_gl_loop<T:UserEvent>(
 
 						if let Some(glutin_window_context) = glutin_window_context.as_mut() {
 							let gl_window = &glutin_window_context.context;
+
 							let app = &mut glutin_window_context.app;
+
 							if !handled {
 								let mut integration =
 									glutin_window_context.integration.borrow_mut();
+
 								integration.on_event(app.as_mut(), event);
+
 								if integration.should_close() {
 									should_close = true;
 									*control_flow = ControlFlow::Wait;
 								}
 							}
+
 							gl_window.window().request_redraw();
 						}
+
 						if should_close {
 							on_window_close(glutin_window_context);
 						} else if let Some(window) = windows_lock.get(&window_id) {
 							if let Some(event) = WindowEventWrapper::from(event).0 {
 								let label = window.label.clone();
+
 								let window_event_listeners = window.window_event_listeners.clone();
+
 								drop(windows_lock);
+
 								callback(RunEvent::WindowEvent { label, event:event.clone() });
+
 								let listeners = window_event_listeners.lock().unwrap();
+
 								let handlers = listeners.values();
+
 								for handler in handlers {
 									handler(&event);
 								}
@@ -598,6 +646,7 @@ pub fn handle_gl_loop<T:UserEvent>(
 
 			Event::UserEvent(message) => {
 				drop(windows_lock);
+
 				handle_user_message(message, windows);
 			},
 
@@ -618,6 +667,7 @@ pub(crate) fn handle_user_message<T:UserEvent>(
 		{
 			if let Some(glutin_window_context) = glutin_window_context_opt {
 				let window = glutin_window_context.context.window();
+
 				match message {
 					WindowMessage::ScaleFactor(tx) => tx.send(window.scale_factor()).unwrap(),
 					WindowMessage::InnerPosition(tx) => {
@@ -753,19 +803,25 @@ fn on_close_requested<'a, T:UserEvent>(
 	window_event_listeners:&WindowEventListeners,
 ) -> bool {
 	let (tx, rx) = channel();
+
 	let listeners = window_event_listeners.lock().unwrap();
+
 	let handlers = listeners.values();
+
 	for handler in handlers {
 		handler(&WindowEvent::CloseRequested { signal_tx:tx.clone() });
 	}
+
 	callback(RunEvent::WindowEvent {
 		label:label.into(),
 		event:WindowEvent::CloseRequested { signal_tx:tx },
 	});
+
 	if let Ok(true) = rx.try_recv() {
 		true
 	} else {
 		on_window_close(glutin_window_context);
+
 		false
 	}
 }
@@ -774,11 +830,14 @@ fn on_window_close(glutin_window_context:&mut Option<Box<GlutinWindowContext>>) 
 	// Destrooy GL context if its a GLWindow
 	if let Some(mut glutin_window_context) = glutin_window_context.take() {
 		let app = glutin_window_context.app.as_mut();
+
 		glutin_window_context
 			.integration
 			.borrow_mut()
 			.save(app, glutin_window_context.context.window());
+
 		app.on_exit(Some(&glutin_window_context.glow_context));
+
 		glutin_window_context.painter.borrow_mut().destroy();
 	}
 }

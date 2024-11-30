@@ -8,6 +8,7 @@ pub fn drag_source(ui: &mut Ui, id: Id, body: impl FnOnce(&mut Ui)) {
 
     // Check for drags:
     let response = ui.interact(response.rect, id, Sense::drag());
+
     if response.hovered() {
       ui.output().cursor_icon = CursorIcon::Grab;
     }
@@ -16,6 +17,7 @@ pub fn drag_source(ui: &mut Ui, id: Id, body: impl FnOnce(&mut Ui)) {
 
     // Paint the body to a new layer:
     let layer_id = LayerId::new(Order::Tooltip, id);
+
     let response = ui.with_layer_id(layer_id, body).response;
 
     // Now we move the visuals of the body to where the mouse is.
@@ -60,6 +62,7 @@ pub fn drop_target<R>(
   if is_being_dragged && !can_accept_what_is_being_dragged {
     // gray out:
     fill = color::tint_color_towards(fill, ui.visuals().window_fill());
+
     stroke.color = color::tint_color_towards(stroke.color, ui.visuals().window_fill());
   }
 
@@ -105,6 +108,7 @@ impl super::Demo for DragAndDropDemo {
 
   fn show(&mut self, ctx: &Context, open: &mut bool) {
     use super::View as _;
+
     Window::new(self.name())
       .open(open)
       .default_size(vec2(256.0, 256.0))
@@ -117,19 +121,25 @@ impl super::Demo for DragAndDropDemo {
 impl super::View for DragAndDropDemo {
   fn ui(&mut self, ui: &mut Ui) {
     ui.label("This is a proof-of-concept of drag-and-drop in egui.");
+
     ui.label("Drag items between columns.");
 
     let id_source = "my_drag_and_drop_demo";
+
     let mut source_col_row = None;
+
     let mut drop_col = None;
+
     ui.columns(self.columns.len(), |uis| {
       for (col_idx, column) in self.columns.clone().into_iter().enumerate() {
         let ui = &mut uis[col_idx];
+
         let can_accept_what_is_being_dragged = true; // We accept anything being dragged (for now) ¯\_(ツ)_/¯
         let response = drop_target(ui, can_accept_what_is_being_dragged, |ui| {
           ui.set_min_size(vec2(64.0, 100.0));
           for (row_idx, item) in column.iter().enumerate() {
             let item_id = Id::new(id_source).with(col_idx).with(row_idx);
+
             drag_source(ui, item_id, |ui| {
               let response = ui.add(Label::new(item).sense(Sense::click()));
               response.context_menu(|ui| {
@@ -150,11 +160,13 @@ impl super::View for DragAndDropDemo {
         let response = response.context_menu(|ui| {
           if ui.button("New Item").clicked() {
             self.columns[col_idx].push("New Item".to_owned());
+
             ui.close_menu();
           }
         });
 
         let is_being_dragged = ui.memory().is_anything_being_dragged();
+
         if is_being_dragged && can_accept_what_is_being_dragged && response.hovered() {
           drop_col = Some(col_idx);
         }

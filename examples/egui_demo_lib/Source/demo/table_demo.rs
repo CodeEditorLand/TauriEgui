@@ -36,6 +36,7 @@ impl super::Demo for TableDemo {
       .default_width(400.0)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -72,6 +73,7 @@ impl super::View for TableDemo {
 
     // Leave room for the source code link after the table demo:
     use egui_extras::{Size, StripBuilder};
+
     StripBuilder::new(ui)
       .size(Size::remainder()) // for the table
       .size(Size::exact(10.0)) // for the source code link
@@ -79,6 +81,7 @@ impl super::View for TableDemo {
         strip.cell(|ui| {
           self.table_ui(ui);
         });
+
         strip.cell(|ui| {
           ui.vertical_centered(|ui| {
             ui.add(crate::egui_github_link_file!());
@@ -105,9 +108,11 @@ impl TableDemo {
         header.col(|ui| {
           ui.heading("Row");
         });
+
         header.col(|ui| {
           ui.heading("Clock");
         });
+
         header.col(|ui| {
           ui.heading("Content");
         });
@@ -116,7 +121,9 @@ impl TableDemo {
         DemoType::Manual => {
           for row_index in 0..20 {
             let is_thick = thick_row(row_index);
+
             let row_height = if is_thick { 30.0 } else { 18.0 };
+
             body.row(row_height, |mut row| {
               row.col(|ui| {
                 ui.label(row_index.to_string());
@@ -126,6 +133,7 @@ impl TableDemo {
               });
               row.col(|ui| {
                 ui.style_mut().wrap = Some(false);
+
                 if is_thick {
                   ui.heading("Extra thick row");
                 } else {
@@ -135,19 +143,23 @@ impl TableDemo {
             });
           }
         }
+
         DemoType::ManyHomogenous => {
           body.rows(text_height, self.num_rows, |row_index, mut row| {
             row.col(|ui| {
               ui.label(row_index.to_string());
             });
+
             row.col(|ui| {
               ui.label(clock_emoji(row_index));
             });
+
             row.col(|ui| {
               ui.add(egui::Label::new("Thousands of rows of even height").wrap(false));
             });
           });
         }
+
         DemoType::ManyHeterogenous => {
           fn row_thickness(row_index: usize) -> f32 {
             if thick_row(row_index) {

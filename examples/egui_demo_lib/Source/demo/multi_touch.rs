@@ -33,6 +33,7 @@ impl super::Demo for MultiTouch {
       .resizable(true)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -43,13 +44,17 @@ impl super::View for MultiTouch {
     ui.vertical_centered(|ui| {
       ui.add(crate::egui_github_link_file!());
     });
+
     ui.strong(
       "This demo only works on devices with multitouch support (e.g. mobiles and tablets).",
     );
+
     ui.separator();
+
     ui.label("Try touch gestures Pinch/Stretch, Rotation, and Pressure with 2+ fingers.");
 
     let num_touches = ui.input().multi_touch().map_or(0, |mt| mt.num_touches);
+
     ui.label(format!("Current touches: {}", num_touches));
 
     let color = if ui.visuals().dark_mode {
@@ -85,6 +90,7 @@ impl super::View for MultiTouch {
         // This adjusts the current zoom factor and rotation angle according to the dynamic
         // change (for the current frame) of the touch gesture:
         self.zoom *= multi_touch.zoom_delta;
+
         self.rotation += multi_touch.rotation_delta;
         // the translation we get from `multi_touch` needs to be scaled down to the
         // normalized coordinates we use as the basis for painting:
@@ -120,6 +126,7 @@ impl MultiTouch {
     let time_since_last_touch = (ui.input().time - self.last_touch_time) as f32;
 
     let delay = 0.5;
+
     if time_since_last_touch < delay {
       ui.ctx().request_repaint();
     } else {
@@ -128,14 +135,21 @@ impl MultiTouch {
 
       if half_life <= 1e-3 {
         self.zoom = 1.0;
+
         self.rotation = 0.0;
+
         self.translation = Vec2::ZERO;
       } else {
         let dt = ui.input().unstable_dt;
+
         let half_life_factor = (-(2_f32.ln()) / half_life * dt).exp();
+
         self.zoom = 1. + ((self.zoom - 1.) * half_life_factor);
+
         self.rotation *= half_life_factor;
+
         self.translation *= half_life_factor;
+
         ui.ctx().request_repaint();
       }
     }

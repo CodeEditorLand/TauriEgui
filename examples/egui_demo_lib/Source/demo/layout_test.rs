@@ -84,6 +84,7 @@ impl super::Demo for LayoutTest {
       .resizable(false)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -92,7 +93,9 @@ impl super::Demo for LayoutTest {
 impl super::View for LayoutTest {
   fn ui(&mut self, ui: &mut Ui) {
     ui.label("Tests and demonstrates the limits of the egui layouts");
+
     self.content_ui(ui);
+
     Resize::default()
       .default_size([150.0, 200.0])
       .show(ui, |ui| {
@@ -112,6 +115,7 @@ impl super::View for LayoutTest {
           ui.with_layout(self.layout.layout(), demo_ui);
         }
       });
+
     ui.label("Resize to see effect");
   }
 }

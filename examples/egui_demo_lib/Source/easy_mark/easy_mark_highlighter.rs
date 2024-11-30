@@ -17,6 +17,7 @@ impl MemoizedEasymarkHighlighter {
       self.code = code.to_owned();
       self.output = highlight_easymark(egui_style, code);
     }
+
     self.output.clone()
   }
 }
@@ -78,7 +79,9 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
       if style.strong {
         // Include the character that is ending this style:
         job.append(&text[..skip], 0.0, format_from_style(egui_style, &style));
+
         text = &text[skip..];
+
         skip = 0;
       }
       style.strong ^= true;
@@ -87,7 +90,9 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
       if style.small {
         // Include the character that is ending this style:
         job.append(&text[..skip], 0.0, format_from_style(egui_style, &style));
+
         text = &text[skip..];
+
         skip = 0;
       }
       style.small ^= true;
@@ -96,7 +101,9 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
       if style.raised {
         // Include the character that is ending this style:
         job.append(&text[..skip], 0.0, format_from_style(egui_style, &style));
+
         text = &text[skip..];
+
         skip = 0;
       }
       style.raised ^= true;
@@ -109,6 +116,7 @@ pub fn highlight_easymark(egui_style: &egui::Style, mut text: &str) -> egui::tex
     let line_end = text[skip..]
       .find('\n')
       .map_or_else(|| text.len(), |i| (skip + i + 1));
+
     let end = text[skip..]
       .find(&['*', '`', '~', '_', '/', '$', '^', '\\', '<', '['][..])
       .map_or_else(|| text.len(), |i| (skip + i).max(1));

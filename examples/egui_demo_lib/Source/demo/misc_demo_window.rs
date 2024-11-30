@@ -96,21 +96,27 @@ impl View for MiscDemoWindow {
       .default_open(false)
       .show(ui, |ui| {
         ui.label("Checkboxes with empty labels take up very little space:");
+
         ui.spacing_mut().item_spacing = Vec2::ZERO;
+
         ui.horizontal_wrapped(|ui| {
           for _ in 0..64 {
             ui.checkbox(&mut self.dummy_bool, "");
           }
         });
+
         ui.checkbox(&mut self.dummy_bool, "checkbox");
 
         ui.label("Radiobuttons are similar:");
+
         ui.spacing_mut().item_spacing = Vec2::ZERO;
+
         ui.horizontal_wrapped(|ui| {
           for i in 0..64 {
             ui.radio_value(&mut self.dummy_usize, i, "");
           }
         });
+
         ui.radio_value(&mut self.dummy_usize, 64, "radio_value");
       });
 
@@ -165,8 +171,11 @@ impl View for MiscDemoWindow {
         ui.horizontal_wrapped(|ui| {
           for i in 0..100 {
             let r = i as f32 * 0.5;
+
             let size = Vec2::splat(2.0 * r + 5.0);
+
             let (rect, _response) = ui.allocate_at_least(size, Sense::hover());
+
             ui.painter()
               .circle_filled(rect.center(), r, ui.visuals().text_color());
           }
@@ -196,6 +205,7 @@ impl Default for Widgets {
 impl Widgets {
   pub fn ui(&mut self, ui: &mut Ui) {
     let Self { angle, password } = self;
+
     ui.vertical_centered(|ui| {
       ui.add(crate::egui_github_link_file_line!());
     });
@@ -203,20 +213,25 @@ impl Widgets {
     ui.horizontal_wrapped(|ui| {
             // Trick so we don't have to add spaces in the text below:
             let width = ui.fonts().glyph_width(&TextStyle::Body.resolve(ui.style()), ' ');
+
             ui.spacing_mut().item_spacing.x = width;
 
             ui.label(RichText::new("Text can have").color(Color32::from_rgb(110, 255, 110)));
+
             ui.colored_label(Color32::from_rgb(128, 140, 255), "color"); // Shortcut version
             ui.label("and tooltips.").on_hover_text(
                 "This is a multiline tooltip that demonstrates that you can easily add tooltips to any element.\nThis is the second line.\nThis is the third.",
             );
 
             ui.label("You can mix in other widgets into text, like");
+
             let _ = ui.small_button("this button");
+
             ui.label(".");
 
             ui.label("The default font supports all latin and cyrillic characters (ИÅđ…), common math symbols (∫√∞²⅓…), and many emojis (💓🌟🖩…).")
                 .on_hover_text("There is currently no support for right-to-left languages.");
+
             ui.label("See the 🔤 Font Book for more!");
 
             ui.monospace("There is also a monospace font.");
@@ -226,10 +241,12 @@ impl Widgets {
       ui.heading("The name of the tooltip");
       ui.horizontal(|ui| {
         ui.label("This tooltip was created with");
+
         ui.monospace(".on_hover_ui(…)");
       });
       let _ = ui.button("A button you can never press");
     };
+
     ui.label("Tooltips can be more than just simple text.")
       .on_hover_ui(tooltip_ui);
 
@@ -350,14 +367,19 @@ impl Default for BoxPainting {
 impl BoxPainting {
   pub fn ui(&mut self, ui: &mut Ui) {
     ui.add(Slider::new(&mut self.size.x, 0.0..=500.0).text("width"));
+
     ui.add(Slider::new(&mut self.size.y, 0.0..=500.0).text("height"));
+
     ui.add(Slider::new(&mut self.rounding, 0.0..=50.0).text("rounding"));
+
     ui.add(Slider::new(&mut self.stroke_width, 0.0..=10.0).text("stroke_width"));
+
     ui.add(Slider::new(&mut self.num_boxes, 0..=8).text("num_boxes"));
 
     ui.horizontal_wrapped(|ui| {
       for _ in 0..self.num_boxes {
         let (rect, _response) = ui.allocate_at_least(self.size, Sense::hover());
+
         ui.painter().rect(
           rect,
           self.rounding,
@@ -391,10 +413,13 @@ impl CustomCollapsingHeader {
     ui.label("Example of a collapsing header with custom header:");
 
     let id = ui.make_persistent_id("my_collapsing_header");
+
     egui::collapsing_header::CollapsingState::load_with_default_open(ui.ctx(), id, true)
       .show_header(ui, |ui| {
         ui.toggle_value(&mut self.selected, "Click to select/unselect");
+
         ui.radio_value(&mut self.radio_value, false, "");
+
         ui.radio_value(&mut self.radio_value, true, "");
       })
       .body(|ui| {
@@ -637,14 +662,19 @@ fn text_layout_ui(
 
   ui.horizontal(|ui| {
     ui.add(DragValue::new(max_rows));
+
     ui.label("Max rows");
   });
   ui.checkbox(break_anywhere, "Break anywhere");
   ui.horizontal(|ui| {
     ui.selectable_value(overflow_character, None, "None");
+
     ui.selectable_value(overflow_character, Some('…'), "…");
+
     ui.selectable_value(overflow_character, Some('—'), "—");
+
     ui.selectable_value(overflow_character, Some('-'), "  -  ");
+
     ui.label("Overflow character");
   });
 

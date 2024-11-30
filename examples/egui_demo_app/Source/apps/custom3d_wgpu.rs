@@ -103,8 +103,11 @@ impl eframe::App for Custom3d {
         .show(ui, |ui| {
           ui.horizontal(|ui| {
             ui.spacing_mut().item_spacing.x = 0.0;
+
             ui.label("The triangle is being painted using ");
+
             ui.hyperlink_to("WGPU", "https://wgpu.rs");
+
             ui.label(" (Portable Rust graphics API awesomeness)");
           });
           ui.label(
@@ -141,10 +144,12 @@ impl Custom3d {
     let cb = egui_wgpu::CallbackFn::new()
       .prepare(move |device, queue, paint_callback_resources| {
         let resources: &TriangleRenderResources = paint_callback_resources.get().unwrap();
+
         resources.prepare(device, queue, angle);
       })
       .paint(move |_info, rpass, paint_callback_resources| {
         let resources: &TriangleRenderResources = paint_callback_resources.get().unwrap();
+
         resources.paint(rpass);
       });
 
@@ -172,7 +177,9 @@ impl TriangleRenderResources {
   fn paint<'rpass>(&'rpass self, rpass: &mut wgpu::RenderPass<'rpass>) {
     // Draw our triangle!
     rpass.set_pipeline(&self.pipeline);
+
     rpass.set_bind_group(0, &self.bind_group, &[]);
+
     rpass.draw(0..3, 0..1);
   }
 }

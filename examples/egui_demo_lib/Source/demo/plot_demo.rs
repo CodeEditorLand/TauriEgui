@@ -68,6 +68,7 @@ impl LineDemo {
                 .speed(0.1)
                 .prefix("x: "),
             );
+
             ui.add(
               egui::DragValue::new(&mut circle_center.y)
                 .speed(1.0)
@@ -79,11 +80,15 @@ impl LineDemo {
 
       ui.vertical(|ui| {
         ui.style_mut().wrap = Some(false);
+
         ui.checkbox(animate, "Animate");
+
         ui.checkbox(square, "Square view")
           .on_hover_text("Always keep the viewport square.");
+
         ui.checkbox(proportional, "Proportional data axes")
           .on_hover_text("Tick are the same size on both axes.");
+
         ui.checkbox(coordinates, "Show coordinates")
           .on_hover_text("Can take a custom formatting function.");
 
@@ -106,9 +111,11 @@ impl LineDemo {
 
   fn circle(&self) -> Line {
     let n = 512;
+
     let circle_points: PlotPoints = (0..=n)
       .map(|i| {
         let t = remap(i as f64, 0.0..=(n as f64), 0.0..=TAU);
+
         let r = self.circle_radius;
         [
           r * t.cos() + self.circle_center.x as f64,
@@ -116,6 +123,7 @@ impl LineDemo {
         ]
       })
       .collect();
+
     Line::new(circle_points)
       .color(Color32::from_rgb(100, 200, 100))
       .style(self.line_style)
@@ -124,6 +132,7 @@ impl LineDemo {
 
   fn sin(&self) -> Line {
     let time = self.time;
+
     Line::new(PlotPoints::from_explicit_callback(
       move |x| 0.5 * (2.0 * x).sin() * time.sin(),
       ..,
@@ -136,6 +145,7 @@ impl LineDemo {
 
   fn thingy(&self) -> Line {
     let time = self.time;
+
     Line::new(PlotPoints::from_parametric_callback(
       move |t| ((2.0 * t + time).sin(), (3.0 * t).sin()),
       0.0..=TAU,
@@ -150,24 +160,32 @@ impl LineDemo {
 impl LineDemo {
   fn ui(&mut self, ui: &mut Ui) -> Response {
     self.options_ui(ui);
+
     if self.animate {
       ui.ctx().request_repaint();
       self.time += ui.input().unstable_dt.at_most(1.0 / 30.0) as f64;
     };
+
     let mut plot = Plot::new("lines_demo").legend(Legend::default());
+
     if self.square {
       plot = plot.view_aspect(1.0);
     }
+
     if self.proportional {
       plot = plot.data_aspect(1.0);
     }
+
     if self.coordinates {
       plot = plot.coordinates_formatter(Corner::LeftBottom, CoordinatesFormatter::default());
     }
+
     plot
       .show(ui, |plot_ui| {
         plot_ui.line(self.circle());
+
         plot_ui.line(self.sin());
+
         plot_ui.line(self.thingy());
       })
       .response
@@ -201,6 +219,7 @@ impl MarkerDemo {
       .enumerate()
       .map(|(i, marker)| {
         let y_offset = i as f64 * 0.5 + 1.0;
+
         let mut points = Points::new(vec![
           [1.0, 0.0 + y_offset],
           [2.0, 0.5 + y_offset],
@@ -241,6 +260,7 @@ impl MarkerDemo {
     let markers_plot = Plot::new("markers_demo")
       .data_aspect(1.0)
       .legend(Legend::default());
+
     markers_plot
       .show(ui, |plot_ui| {
         for marker in self.markers() {
@@ -290,6 +310,7 @@ impl LegendDemo {
       ui.label("Text style:");
       ui.horizontal(|ui| {
         let all_text_styles = ui.style().text_styles();
+
         for style in all_text_styles {
           ui.selectable_value(&mut config.text_style, style.clone(), style.to_string());
         }
@@ -316,12 +337,17 @@ impl LegendDemo {
     let legend_plot = Plot::new("legend_demo")
       .legend(config.clone())
       .data_aspect(1.0);
+
     legend_plot
       .show(ui, |plot_ui| {
         plot_ui.line(LegendDemo::line_with_slope(0.5).name("lines"));
+
         plot_ui.line(LegendDemo::line_with_slope(1.0).name("lines"));
+
         plot_ui.line(LegendDemo::line_with_slope(2.0).name("lines"));
+
         plot_ui.line(LegendDemo::sin().name("sin(x)"));
+
         plot_ui.line(LegendDemo::cos().name("cos(x)"));
       })
       .response
@@ -347,6 +373,7 @@ impl CustomAxisDemo {
       days(0.0)..days(5.0),
       100,
     );
+
     Line::new(values)
   }
 
@@ -358,7 +385,9 @@ impl CustomAxisDemo {
     let mut marks = vec![];
 
     let (min, max) = input.bounds;
+
     let min = min.floor() as i32;
+
     let max = max.ceil() as i32;
 
     for i in min..=max {
@@ -388,6 +417,7 @@ impl CustomAxisDemo {
   #[allow(clippy::unused_self)]
   fn ui(&mut self, ui: &mut Ui) -> Response {
     const MINS_PER_DAY: f64 = CustomAxisDemo::MINS_PER_DAY;
+
     const MINS_PER_H: f64 = CustomAxisDemo::MINS_PER_H;
 
     fn day(x: f64) -> f64 {
@@ -465,7 +495,9 @@ struct LinkedAxisDemo {
 impl Default for LinkedAxisDemo {
   fn default() -> Self {
     let link_x = true;
+
     let link_y = false;
+
     Self {
       link_x,
       link_y,
@@ -501,9 +533,13 @@ impl LinkedAxisDemo {
 
   fn configure_plot(plot_ui: &mut plot::PlotUi) {
     plot_ui.line(LinkedAxisDemo::line_with_slope(0.5));
+
     plot_ui.line(LinkedAxisDemo::line_with_slope(1.0));
+
     plot_ui.line(LinkedAxisDemo::line_with_slope(2.0));
+
     plot_ui.line(LinkedAxisDemo::sin());
+
     plot_ui.line(LinkedAxisDemo::cos());
   }
 
@@ -513,8 +549,11 @@ impl LinkedAxisDemo {
       ui.checkbox(&mut self.link_x, "X");
       ui.checkbox(&mut self.link_y, "Y");
     });
+
     self.group.set_link_x(self.link_x);
+
     self.group.set_link_y(self.link_y);
+
     ui.horizontal(|ui| {
       Plot::new("linked_axis_1")
         .data_aspect(1.0)
@@ -529,6 +568,7 @@ impl LinkedAxisDemo {
         .link_axis(self.group.clone())
         .show(ui, LinkedAxisDemo::configure_plot);
     });
+
     Plot::new("linked_axis_3")
       .data_aspect(0.5)
       .width(250.0)
@@ -549,17 +589,20 @@ struct ItemsDemo {
 impl ItemsDemo {
   fn ui(&mut self, ui: &mut Ui) -> Response {
     let n = 100;
+
     let mut sin_values: Vec<_> = (0..=n)
       .map(|i| remap(i as f64, 0.0..=n as f64, -TAU..=TAU))
       .map(|i| [i, i.sin()])
       .collect();
 
     let line = Line::new(sin_values.split_off(n / 2)).fill(-1.5);
+
     let polygon = Polygon::new(PlotPoints::from_parametric_callback(
       |t| (4.0 * t.sin() + 2.0 * t.cos(), 4.0 * t.cos() + 2.0 * t.sin()),
       0.0..TAU,
       100,
     ));
+
     let points = Points::new(sin_values).stems(-1.5).radius(1.0);
 
     let arrows = {
@@ -585,6 +628,7 @@ impl ItemsDemo {
         egui::TextureFilter::Linear,
       )
     });
+
     let image = PlotImage::new(
       texture,
       PlotPoint::new(0.0, 10.0),
@@ -596,20 +640,33 @@ impl ItemsDemo {
       .show_x(false)
       .show_y(false)
       .data_aspect(1.0);
+
     plot
       .show(ui, |plot_ui| {
         plot_ui.hline(HLine::new(9.0).name("Lines horizontal"));
+
         plot_ui.hline(HLine::new(-9.0).name("Lines horizontal"));
+
         plot_ui.vline(VLine::new(9.0).name("Lines vertical"));
+
         plot_ui.vline(VLine::new(-9.0).name("Lines vertical"));
+
         plot_ui.line(line.name("Line with fill"));
+
         plot_ui.polygon(polygon.name("Convex polygon"));
+
         plot_ui.points(points.name("Points with stems"));
+
         plot_ui.text(Text::new(PlotPoint::new(-3.0, -3.0), "wow").name("Text"));
+
         plot_ui.text(Text::new(PlotPoint::new(-2.0, 2.5), "so graph").name("Text"));
+
         plot_ui.text(Text::new(PlotPoint::new(3.0, 3.0), "much color").name("Text"));
+
         plot_ui.text(Text::new(PlotPoint::new(2.5, -2.0), "such plot").name("Text"));
+
         plot_ui.image(image.name("Image"));
+
         plot_ui.arrows(arrows.name("Arrows"));
       })
       .response
@@ -644,21 +701,27 @@ impl InteractionDemo {
       bounds.min(),
       bounds.max()
     ));
+
     ui.label(format!(
       "origin in screen coordinates: x: {:.02}, y: {:.02}",
       screen_pos.x, screen_pos.y
     ));
+
     ui.label(format!("plot hovered: {}", hovered));
+
     let coordinate_text = if let Some(coordinate) = pointer_coordinate {
       format!("x: {:.02}, y: {:.02}", coordinate.x, coordinate.y)
     } else {
       "None".to_owned()
     };
+
     ui.label(format!("pointer coordinate: {}", coordinate_text));
+
     let coordinate_text = format!(
       "x: {:.02}, y: {:.02}",
       pointer_coordinate_drag_delta.x, pointer_coordinate_drag_delta.y
     );
+
     ui.label(format!(
       "pointer coordinate drag delta: {}",
       coordinate_text
@@ -701,16 +764,20 @@ impl Default for ChartsDemo {
 impl ChartsDemo {
   fn ui(&mut self, ui: &mut Ui) -> Response {
     ui.label("Type:");
+
     ui.horizontal(|ui| {
       ui.selectable_value(&mut self.chart, Chart::GaussBars, "Histogram");
       ui.selectable_value(&mut self.chart, Chart::StackedBars, "Stacked Bar Chart");
       ui.selectable_value(&mut self.chart, Chart::BoxPlot, "Box Plot");
     });
+
     ui.label("Orientation:");
+
     ui.horizontal(|ui| {
       ui.selectable_value(&mut self.vertical, true, "Vertical");
       ui.selectable_value(&mut self.vertical, false, "Horizontal");
     });
+
     match self.chart {
       Chart::GaussBars => self.bar_gauss(ui),
       Chart::StackedBars => self.bar_stacked(ui),
@@ -735,6 +802,7 @@ impl ChartsDemo {
     )
     .color(Color32::LIGHT_BLUE)
     .name("Normal Distribution");
+
     if !self.vertical {
       chart = chart.horizontal();
     }
@@ -802,8 +870,11 @@ impl ChartsDemo {
       .data_aspect(1.0)
       .show(ui, |plot_ui| {
         plot_ui.bar_chart(chart1);
+
         plot_ui.bar_chart(chart2);
+
         plot_ui.bar_chart(chart3);
+
         plot_ui.bar_chart(chart4);
       })
       .response
@@ -811,6 +882,7 @@ impl ChartsDemo {
 
   fn box_plot(&self, ui: &mut Ui) -> Response {
     let yellow = Color32::from_rgb(248, 252, 168);
+
     let mut box1 = BoxPlot::new(vec![
       BoxElem::new(0.5, BoxSpread::new(1.5, 2.2, 2.5, 2.6, 3.1)).name("Day 1"),
       BoxElem::new(2.5, BoxSpread::new(0.4, 1.0, 1.1, 1.4, 2.1)).name("Day 2"),
@@ -845,7 +917,9 @@ impl ChartsDemo {
       .legend(Legend::default())
       .show(ui, |plot_ui| {
         plot_ui.box_plot(box1);
+
         plot_ui.box_plot(box2);
+
         plot_ui.box_plot(box3);
       })
       .response
@@ -894,6 +968,7 @@ impl super::Demo for PlotDemo {
 
   fn show(&mut self, ctx: &Context, open: &mut bool) {
     use super::View as _;
+
     Window::new(self.name())
       .open(open)
       .default_size(vec2(400.0, 400.0))
@@ -908,7 +983,9 @@ impl super::View for PlotDemo {
       egui::reset_button(ui, self);
       ui.collapsing("Instructions", |ui| {
         ui.label("Pan by dragging, or scroll (+ shift = horizontal).");
+
         ui.label("Box zooming: Right click to zoom in and zoom out using a selection.");
+
         if cfg!(target_arch = "wasm32") {
           ui.label("Zoom with ctrl / ⌘ + pointer wheel, or with pinch gesture.");
         } else if cfg!(target_os = "macos") {
@@ -916,11 +993,15 @@ impl super::View for PlotDemo {
         } else {
           ui.label("Zoom with ctrl + scroll.");
         }
+
         ui.label("Reset view with double-click.");
+
         ui.add(crate::egui_github_link_file!());
       });
     });
+
     ui.separator();
+
     ui.horizontal(|ui| {
       ui.selectable_value(&mut self.open_panel, Panel::Lines, "Lines");
       ui.selectable_value(&mut self.open_panel, Panel::Markers, "Markers");
@@ -931,6 +1012,7 @@ impl super::View for PlotDemo {
       ui.selectable_value(&mut self.open_panel, Panel::CustomAxes, "Custom Axes");
       ui.selectable_value(&mut self.open_panel, Panel::LinkedAxes, "Linked Axes");
     });
+
     ui.separator();
 
     match self.open_panel {

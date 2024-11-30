@@ -118,6 +118,7 @@ impl BackendPanel {
     ui.separator();
 
     ui.label("egui windows:");
+
     self.egui_windows.checkboxes(ui);
 
     ui.separator();
@@ -168,6 +169,7 @@ impl BackendPanel {
     // For instance: `eframe` web sets `pixels_per_point` every frame to force
     // egui to use the same scale as the web zoom factor.
     let integration_controls_pixels_per_point = ui.input().raw.pixels_per_point.is_some();
+
     if !integration_controls_pixels_per_point {
       if let Some(new_pixels_per_point) = self.pixels_per_point_ui(ui, &frame.info()) {
         ui.ctx().set_pixels_per_point(new_pixels_per_point);
@@ -228,6 +230,7 @@ impl BackendPanel {
       .on_hover_text("Physical pixels per point.");
       if let Some(native_pixels_per_point) = info.native_pixels_per_point {
         let enabled = *pixels_per_point != native_pixels_per_point;
+
         if ui
           .add_enabled(enabled, egui::Button::new("Reset"))
           .on_hover_text(format!(
@@ -269,13 +272,16 @@ impl BackendPanel {
 
       ui.horizontal(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
+
         ui.label("(but at least every ");
+
         egui::DragValue::new(&mut self.repaint_after_seconds)
           .clamp_range(0.1..=10.0)
           .speed(0.1)
           .suffix(" s")
           .ui(ui)
           .on_hover_text("Repaint this often, even if there is no input.");
+
         ui.label(")");
       });
     }
@@ -323,8 +329,11 @@ impl EguiWindows {
     } = self;
 
     ui.checkbox(settings, "🔧 Settings");
+
     ui.checkbox(inspection, "🔍 Inspection");
+
     ui.checkbox(memory, "📝 Memory");
+
     ui.checkbox(output_events, "📤 Output Events");
   }
 
@@ -340,6 +349,7 @@ impl EguiWindows {
     for event in &ctx.output().events {
       output_event_history.push_back(event.clone());
     }
+
     while output_event_history.len() > 1000 {
       output_event_history.pop_front();
     }

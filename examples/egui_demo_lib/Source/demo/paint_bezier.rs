@@ -45,6 +45,7 @@ impl PaintBezier {
     ui.collapsing("Colors", |ui| {
       ui.horizontal(|ui| {
         ui.label("Fill color:");
+
         ui.color_edit_button_srgba(&mut self.fill);
       });
       egui::stroke_ui(ui, &mut self.stroke, "Curve Stroke");
@@ -61,8 +62,11 @@ impl PaintBezier {
     });
 
     ui.radio_value(&mut self.degree, 3, "Quadratic Bézier");
+
     ui.radio_value(&mut self.degree, 4, "Cubic Bézier");
+
     ui.label("Move the points by dragging them.");
+
     ui.small("Only convex curves can be accurately filled.");
   }
 
@@ -110,22 +114,28 @@ impl PaintBezier {
     match self.degree {
       3 => {
         let points = points_in_screen.clone().try_into().unwrap();
+
         let shape = QuadraticBezierShape::from_points_stroke(points, true, self.fill, self.stroke);
+
         painter.add(epaint::RectShape::stroke(
           shape.visual_bounding_rect(),
           0.0,
           self.bounding_box_stroke,
         ));
+
         painter.add(shape);
       }
       4 => {
         let points = points_in_screen.clone().try_into().unwrap();
+
         let shape = CubicBezierShape::from_points_stroke(points, true, self.fill, self.stroke);
+
         painter.add(epaint::RectShape::stroke(
           shape.visual_bounding_rect(),
           0.0,
           self.bounding_box_stroke,
         ));
+
         painter.add(shape);
       }
       _ => {
@@ -134,6 +144,7 @@ impl PaintBezier {
     };
 
     painter.add(PathShape::line(points_in_screen, self.aux_stroke));
+
     painter.extend(control_point_shapes);
 
     response
@@ -147,6 +158,7 @@ impl super::Demo for PaintBezier {
 
   fn show(&mut self, ctx: &Context, open: &mut bool) {
     use super::View as _;
+
     Window::new(self.name())
       .open(open)
       .vscroll(false)
@@ -161,6 +173,7 @@ impl super::View for PaintBezier {
     ui.vertical_centered(|ui| {
       ui.add(crate::egui_github_link_file!());
     });
+
     self.ui_control(ui);
 
     Frame::canvas(ui.style()).show(ui, |ui| {

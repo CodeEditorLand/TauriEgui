@@ -52,6 +52,7 @@ impl super::Demo for ContextMenus {
 
   fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
     use super::View;
+
     egui::Window::new(self.name())
       .vscroll(false)
       .resizable(false)
@@ -71,6 +72,7 @@ impl super::View for ContextMenus {
     ui.separator();
 
     ui.label("Right-click plot to edit it!");
+
     ui.horizontal(|ui| {
       self.example_plot(ui).context_menu(|ui| {
         ui.menu_button("Plot", |ui| {
@@ -85,6 +87,7 @@ impl super::View for ContextMenus {
             ui.close_menu();
           }
         });
+
         egui::Grid::new("button_grid").show(ui, |ui| {
           ui.add(
             egui::DragValue::new(&mut self.width)
@@ -109,6 +112,7 @@ impl super::View for ContextMenus {
         });
       });
     });
+
     ui.vertical_centered(|ui| {
       ui.add(crate::egui_github_link_file!());
     });
@@ -118,7 +122,9 @@ impl super::View for ContextMenus {
 impl ContextMenus {
   fn example_plot(&self, ui: &mut egui::Ui) -> egui::Response {
     use egui::plot::{Line, PlotPoints};
+
     let n = 128;
+
     let line = Line::new(
       (0..=n)
         .map(|i| {
@@ -132,6 +138,7 @@ impl ContextMenus {
         })
         .collect::<PlotPoints>(),
     );
+
     egui::plot::Plot::new("example_plot")
       .show_axes(self.show_axes)
       .allow_drag(self.allow_drag)
@@ -150,17 +157,20 @@ impl ContextMenus {
     if ui.button("Open...").clicked() {
       ui.close_menu();
     }
+
     ui.menu_button("SubMenu", |ui| {
       ui.menu_button("SubMenu", |ui| {
         if ui.button("Open...").clicked() {
           ui.close_menu();
         }
+
         let _ = ui.button("Item");
       });
       ui.menu_button("SubMenu", |ui| {
         if ui.button("Open...").clicked() {
           ui.close_menu();
         }
+
         let _ = ui.button("Item");
       });
       let _ = ui.button("Item");
@@ -168,6 +178,7 @@ impl ContextMenus {
         ui.close_menu();
       }
     });
+
     ui.menu_button("SubMenu", |ui| {
       let _ = ui.button("Item1");
       let _ = ui.button("Item2");
@@ -177,6 +188,7 @@ impl ContextMenus {
         ui.close_menu();
       }
     });
+
     let _ = ui.button("Very long text for this item");
   }
 }

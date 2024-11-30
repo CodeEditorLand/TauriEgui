@@ -47,6 +47,7 @@ impl Default for Demos {
 impl Demos {
   pub fn from_demos(demos: Vec<Box<dyn Demo>>) -> Self {
     let mut open = BTreeSet::new();
+
     open.insert(
       super::widget_gallery::WidgetGallery::default()
         .name()
@@ -58,6 +59,7 @@ impl Demos {
 
   pub fn checkboxes(&mut self, ui: &mut Ui) {
     let Self { demos, open } = self;
+
     for demo in demos {
       let mut is_open = open.contains(demo.name());
       ui.toggle_value(&mut is_open, demo.name());
@@ -67,6 +69,7 @@ impl Demos {
 
   pub fn windows(&mut self, ctx: &Context) {
     let Self { demos, open } = self;
+
     for demo in demos {
       let mut is_open = open.contains(demo.name());
       demo.show(ctx, &mut is_open);
@@ -102,6 +105,7 @@ impl Default for Tests {
 impl Tests {
   pub fn from_demos(demos: Vec<Box<dyn Demo>>) -> Self {
     let mut open = BTreeSet::new();
+
     open.insert(
       super::widget_gallery::WidgetGallery::default()
         .name()
@@ -113,6 +117,7 @@ impl Tests {
 
   pub fn checkboxes(&mut self, ui: &mut Ui) {
     let Self { demos, open } = self;
+
     for demo in demos {
       let mut is_open = open.contains(demo.name());
       ui.toggle_value(&mut is_open, demo.name());
@@ -122,6 +127,7 @@ impl Tests {
 
   pub fn windows(&mut self, ctx: &Context) {
     let Self { demos, open } = self;
+
     for demo in demos {
       let mut is_open = open.contains(demo.name());
       demo.show(ctx, &mut is_open);
@@ -242,6 +248,7 @@ impl DemoWindows {
       .default_width(145.0)
       .show(ctx, |ui| {
         egui::trace!(ui);
+
         ui.vertical_centered(|ui| {
           ui.heading("✒ egui demos");
         });
@@ -249,10 +256,12 @@ impl DemoWindows {
         ui.separator();
 
         use egui::special_emojis::{GITHUB, TWITTER};
+
         ui.hyperlink_to(
           format!("{} egui on GitHub", GITHUB),
           "https://github.com/emilk/egui",
         );
+
         ui.hyperlink_to(
           format!("{} @ernerfeldt", TWITTER),
           "https://twitter.com/ernerfeldt",
@@ -275,7 +284,9 @@ impl DemoWindows {
   /// Show the open windows.
   fn show_windows(&mut self, ctx: &Context) {
     self.about.show(ctx, &mut self.about_is_open);
+
     self.demos.windows(ctx);
+
     self.tests.windows(ctx);
   }
 
@@ -285,9 +296,13 @@ impl DemoWindows {
         ui.toggle_value(&mut self.about_is_open, self.about.name());
 
         ui.separator();
+
         self.demos.checkboxes(ui);
+
         ui.separator();
+
         self.tests.checkboxes(ui);
+
         ui.separator();
 
         if ui.button("Organize windows").clicked() {
@@ -306,6 +321,7 @@ fn file_menu_button(ui: &mut Ui) {
       ui.ctx().memory().reset_areas();
       ui.close_menu();
     }
+
     if ui
       .button("Reset egui memory")
       .on_hover_text("Forget scroll, positions, sizes etc")

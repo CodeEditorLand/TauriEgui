@@ -35,6 +35,7 @@ impl super::Demo for Scrolling {
       .resizable(false)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -56,7 +57,9 @@ impl super::View for Scrolling {
       );
       ui.selectable_value(&mut self.demo, ScrollDemo::StickToEnd, "Stick to end");
     });
+
     ui.separator();
+
     match self.demo {
       ScrollDemo::ScrollTo => {
         self.scroll_to.ui(ui);
@@ -88,6 +91,7 @@ fn huge_content_lines(ui: &mut egui::Ui) {
     |ui, row_range| {
       for row in row_range {
         let text = format!("This is row {}/{}", row + 1, num_rows);
+
         ui.label(text);
       }
     },
@@ -116,14 +120,18 @@ fn huge_content_painter(ui: &mut egui::Ui) {
 
       for i in first_item..last_item {
         let indentation = (i % 100) as f32;
+
         let x = ui.min_rect().left() + indentation;
+
         let y = ui.min_rect().top() + i as f32 * row_height;
+
         let text = format!(
           "This is row {}/{}, indented by {} pixels",
           i + 1,
           num_rows,
           indentation
         );
+
         let text_rect = ui.painter().text(
           pos2(x, y),
           Align2::LEFT_TOP,
@@ -131,6 +139,7 @@ fn huge_content_painter(ui: &mut egui::Ui) {
           font_id.clone(),
           ui.visuals().text_color(),
         );
+
         used_rect = used_rect.union(text_rect);
       }
 
@@ -164,8 +173,11 @@ impl super::View for ScrollTo {
     ui.label("This shows how you can scroll to a specific item or pixel offset");
 
     let mut track_item = false;
+
     let mut go_to_scroll_offset = false;
+
     let mut scroll_top = false;
+
     let mut scroll_bottom = false;
 
     ui.horizontal(|ui| {
@@ -206,16 +218,19 @@ impl super::View for ScrollTo {
     let mut scroll_area = ScrollArea::vertical()
       .max_height(200.0)
       .auto_shrink([false; 2]);
+
     if go_to_scroll_offset {
       scroll_area = scroll_area.vertical_scroll_offset(self.offset);
     }
 
     ui.separator();
+
     let (current_scroll, max_scroll) = scroll_area
       .show(ui, |ui| {
         if scroll_top {
           ui.scroll_to_cursor(Some(Align::TOP));
         }
+
         ui.vertical(|ui| {
           for item in 1..=50 {
             if track_item && item == self.track_item {
@@ -234,10 +249,12 @@ impl super::View for ScrollTo {
         let margin = ui.visuals().clip_rect_margin;
 
         let current_scroll = ui.clip_rect().top() - ui.min_rect().top() + margin;
+
         let max_scroll = ui.min_rect().height() - ui.clip_rect().height() + 2.0 * margin;
         (current_scroll, max_scroll)
       })
       .inner;
+
     ui.separator();
 
     ui.label(format!(
@@ -246,6 +263,7 @@ impl super::View for ScrollTo {
     ));
 
     ui.separator();
+
     ui.vertical_centered(|ui| {
       egui::reset_button(ui, self);
       ui.add(crate::egui_github_link_file!());
@@ -267,7 +285,9 @@ impl super::View for ScrollStickTo {
     ui.add_space(4.0);
 
     let text_style = TextStyle::Body;
+
     let row_height = ui.text_style_height(&text_style);
+
     ScrollArea::vertical().stick_to_bottom(true).show_rows(
       ui,
       row_height,
@@ -281,6 +301,7 @@ impl super::View for ScrollStickTo {
     );
 
     self.n_items += 1;
+
     ui.ctx().request_repaint();
   }
 }

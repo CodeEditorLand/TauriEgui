@@ -9,11 +9,13 @@ impl super::Demo for WindowWithPanels {
 
   fn show(&mut self, ctx: &egui::Context, open: &mut bool) {
     use super::View as _;
+
     let window = egui::Window::new("Window with Panels")
       .default_width(600.0)
       .default_height(400.0)
       .vscroll(false)
       .open(open);
+
     window.show(ctx, |ui| self.ui(ui));
   }
 }
@@ -42,6 +44,7 @@ impl super::View for WindowWithPanels {
         ui.vertical_centered(|ui| {
           ui.heading("Left Panel");
         });
+
         egui::ScrollArea::vertical().show(ui, |ui| {
           lorem_ipsum(ui);
         });
@@ -55,6 +58,7 @@ impl super::View for WindowWithPanels {
         ui.vertical_centered(|ui| {
           ui.heading("Right Panel");
         });
+
         egui::ScrollArea::vertical().show(ui, |ui| {
           lorem_ipsum(ui);
         });

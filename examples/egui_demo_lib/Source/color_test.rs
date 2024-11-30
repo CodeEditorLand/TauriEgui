@@ -39,14 +39,19 @@ impl ColorTest {
     });
 
     ui.label("This is made to test that the egui painter backend is set up correctly, so that all colors are interpolated and blended in linear space with premultiplied alpha.");
+
     ui.label("If everything is set up correctly, all groups of gradients will look uniform");
 
     ui.checkbox(&mut self.vertex_gradients, "Vertex gradients");
+
     ui.checkbox(&mut self.texture_gradients, "Texture gradients");
+
     ui.checkbox(&mut self.srgb, "Show naive sRGBA horror");
 
     ui.heading("sRGB color test");
+
     ui.label("Use a color picker to ensure this color is (255, 165, 0) / #ffa500");
+
     ui.scope(|ui| {
       ui.spacing_mut().item_spacing.y = 0.0; // No spacing between gradients
       let g = Gradient::one_color(Color32::from_rgb(255, 165, 0));
@@ -57,6 +62,7 @@ impl ColorTest {
     ui.separator();
 
     ui.label("Test that vertex color times texture color is done in linear space:");
+
     ui.scope(|ui| {
       ui.spacing_mut().item_spacing.y = 0.0; // No spacing between gradients
 
@@ -65,25 +71,37 @@ impl ColorTest {
 
       ui.horizontal(|ui| {
         let color_size = ui.spacing().interact_size;
+
         ui.label("texture");
+
         show_color(ui, tex_color, color_size);
+
         ui.label(" * ");
+
         show_color(ui, vertex_color, color_size);
+
         ui.label(" vertex color =");
       });
       {
         let g = Gradient::one_color(Color32::from(tex_color * vertex_color));
+
         self.vertex_gradient(ui, "Ground truth (vertices)", WHITE, &g);
+
         self.tex_gradient(ui, "Ground truth (texture)", WHITE, &g);
       }
 
       ui.horizontal(|ui| {
         let g = Gradient::one_color(Color32::from(tex_color));
+
         let tex = self.tex_mngr.get(ui.ctx(), &g);
+
         let texel_offset = 0.5 / (g.0.len() as f32);
+
         let uv = Rect::from_min_max(pos2(texel_offset, 0.0), pos2(1.0 - texel_offset, 1.0));
+
         ui.add(Image::new(tex, GRADIENT_SIZE).tint(vertex_color).uv(uv))
           .on_hover_text(format!("A texture that is {} texels wide", g.0.len()));
+
         ui.label("GPU result");
       });
     });
@@ -94,6 +112,7 @@ impl ColorTest {
     // to make sure vertex and texture color multiplication is done in linear space.
 
     self.show_gradients(ui, WHITE, (RED, GREEN));
+
     if self.srgb {
       ui.label("Notice the darkening in the center of the naive sRGB interpolation.");
     }
@@ -105,6 +124,7 @@ impl ColorTest {
     ui.separator();
 
     self.show_gradients(ui, WHITE, (TRANSPARENT, GREEN));
+
     if self.srgb {
       ui.label(
             "Notice how the linear blend stays green while the naive sRGBA interpolation looks gray in the middle.",
@@ -114,13 +134,19 @@ impl ColorTest {
     ui.separator();
 
     self.show_gradients(ui, BLACK, (BLACK, WHITE));
+
     ui.separator();
+
     self.show_gradients(ui, WHITE, (BLACK, TRANSPARENT));
+
     ui.separator();
+
     self.show_gradients(ui, BLACK, (TRANSPARENT, WHITE));
+
     ui.separator();
 
     ui.label("Additive blending: add more and more blue to the red background:");
+
     self.show_gradients(
       ui,
       RED,
@@ -143,6 +169,7 @@ impl ColorTest {
       let color_size = ui.spacing().interact_size;
       if !is_opaque {
         ui.label("Background:");
+
         show_color(ui, bg_fill, color_size);
       }
       ui.label("gradient");
@@ -155,24 +182,31 @@ impl ColorTest {
       ui.spacing_mut().item_spacing.y = 0.0; // No spacing between gradients
       if is_opaque {
         let g = Gradient::ground_truth_linear_gradient(left, right);
+
         self.vertex_gradient(ui, "Ground Truth (CPU gradient) - vertices", bg_fill, &g);
+
         self.tex_gradient(ui, "Ground Truth (CPU gradient) - texture", bg_fill, &g);
       } else {
         let g = Gradient::ground_truth_linear_gradient(left, right).with_bg_fill(bg_fill);
+
         self.vertex_gradient(
           ui,
           "Ground Truth (CPU gradient, CPU blending) - vertices",
           bg_fill,
           &g,
         );
+
         self.tex_gradient(
           ui,
           "Ground Truth (CPU gradient, CPU blending) - texture",
           bg_fill,
           &g,
         );
+
         let g = Gradient::ground_truth_linear_gradient(left, right);
+
         self.vertex_gradient(ui, "CPU gradient, GPU blending - vertices", bg_fill, &g);
+
         self.tex_gradient(ui, "CPU gradient, GPU blending - texture", bg_fill, &g);
       }
 
@@ -187,12 +221,14 @@ impl ColorTest {
 
       if self.srgb {
         let g = Gradient::ground_truth_bad_srgba_gradient(left, right).with_bg_fill(bg_fill);
+
         self.vertex_gradient(
           ui,
           "Triangle mesh with naive sRGBA interpolation (WRONG)",
           bg_fill,
           &g,
         );
+
         self.tex_gradient(ui, "Naive sRGBA interpolation (WRONG)", bg_fill, &g);
       }
     });
@@ -202,6 +238,7 @@ impl ColorTest {
     if !self.texture_gradients {
       return;
     }
+
     ui.horizontal(|ui| {
       let tex = self.tex_mngr.get(ui.ctx(), gradient);
       let texel_offset = 0.5 / (gradient.0.len() as f32);
@@ -219,6 +256,7 @@ impl ColorTest {
     if !self.vertex_gradients {
       return;
     }
+
     ui.horizontal(|ui| {
       vertex_gradient(ui, bg_fill, gradient).on_hover_text(format!(
         "A triangle mesh that is {} vertices wide",
@@ -234,13 +272,18 @@ fn vertex_gradient(ui: &mut Ui, bg_fill: Color32, gradient: &Gradient) -> Respon
   let (rect, response) = ui.allocate_at_least(GRADIENT_SIZE, Sense::hover());
   if bg_fill != Default::default() {
     let mut mesh = Mesh::default();
+
     mesh.add_colored_rect(rect, bg_fill);
+
     ui.painter().add(Shape::mesh(mesh));
   }
   {
     let n = gradient.0.len();
+
     assert!(n >= 2);
+
     let mut mesh = Mesh::default();
+
     for (i, &color) in gradient.0.iter().enumerate() {
       let t = i as f32 / (n as f32 - 1.0);
       let x = lerp(rect.x_range(), t);
@@ -248,10 +291,13 @@ fn vertex_gradient(ui: &mut Ui, bg_fill: Color32, gradient: &Gradient) -> Respon
       mesh.colored_vertex(pos2(x, rect.bottom()), color);
       if i < n - 1 {
         let i = i as u32;
+
         mesh.add_triangle(2 * i, 2 * i + 1, 2 * i + 2);
+
         mesh.add_triangle(2 * i + 1, 2 * i + 2, 2 * i + 3);
       }
     }
+
     ui.painter().add(Shape::mesh(mesh));
   }
   response
@@ -271,9 +317,11 @@ impl Gradient {
 
   pub fn ground_truth_linear_gradient(left: Color32, right: Color32) -> Self {
     let left = Rgba::from(left);
+
     let right = Rgba::from(right);
 
     let n = 255;
+
     Self(
       (0..=n)
         .map(|i| {
@@ -287,6 +335,7 @@ impl Gradient {
   /// This is how a bad person blends `sRGBA`
   pub fn ground_truth_bad_srgba_gradient(left: Color32, right: Color32) -> Self {
     let n = 255;
+
     Self(
       (0..=n)
         .map(|i| {
@@ -305,6 +354,7 @@ impl Gradient {
   /// Do premultiplied alpha-aware blending of the gradient on top of the fill color
   pub fn with_bg_fill(self, bg: Color32) -> Self {
     let bg = Rgba::from(bg);
+
     Self(
       self
         .0
@@ -374,7 +424,9 @@ fn pixel_test(ui: &mut Ui) {
       ),
       Vec2::splat(size as f32) / pixels_per_point,
     );
+
     painter.rect_filled(rect_points, 0.0, color);
+
     cursor_pixel.x += (1 + size) as f32;
   }
 }
@@ -400,6 +452,7 @@ fn blending_and_feathering_test(ui: &mut Ui) {
 fn paint_fine_lines_and_text(painter: &egui::Painter, mut rect: Rect, color: Color32) {
   {
     let mut x = 0.0;
+
     for opacity in [1.00, 0.50, 0.25, 0.10, 0.05, 0.02, 0.01, 0.00] {
       painter.text(
         rect.center_top() + vec2(0.0, x),
@@ -451,6 +504,7 @@ fn paint_fine_lines_and_text(painter: &egui::Painter, mut rect: Rect, color: Col
     ));
 
     rect.min.y += 32.0;
+
     rect.max.x -= 32.0;
   }
 

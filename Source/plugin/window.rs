@@ -28,8 +28,10 @@ macro_rules! window_getter {
 
 		$self.context.inner.run_threaded(|main_thread| {
 			let message = Message::Window($self.id, $message(tx));
+
 			if main_thread.is_some() {
 				super::handle_user_message(&message, &$self.context.main_thread.windows);
+
 				Ok(())
 			} else {
 				$self
@@ -41,6 +43,7 @@ macro_rules! window_getter {
 					.map_err(tauri::Error::from)
 			}
 		})?;
+
 		rx.recv().map_err(|_| Error::FailedToReceiveMessage).map_err(tauri::Error::from)
 	}};
 }
@@ -137,8 +140,10 @@ impl<T:UserEvent> Window<T> {
 	fn send_event(&self, message:WindowMessage) -> Result<()> {
 		self.context.inner.run_threaded(|main_thread| {
 			let message = Message::Window(self.id, message);
+
 			if main_thread.is_some() {
 				super::handle_user_message(&message, &self.context.main_thread.windows);
+
 				Ok(())
 			} else {
 				self.context
@@ -253,6 +258,7 @@ impl<T:UserEvent> Window<T> {
 	/// Sets this window' icon.
 	pub fn set_icon(&self, icon:Icon) -> Result<()> {
 		let icon:tauri_runtime::Icon = icon.try_into()?;
+
 		self.send_event(WindowMessage::SetIcon(
 			WryIcon::try_from(icon).map_err(tauri_runtime::Error::from)?.0,
 		))

@@ -14,6 +14,7 @@ impl super::Demo for About {
       .open(open)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -24,6 +25,7 @@ impl super::View for About {
     use egui::special_emojis::{OS_APPLE, OS_LINUX, OS_WINDOWS};
 
     ui.heading("egui");
+
     ui.label(format!(
             "egui is an immediate mode GUI library written in Rust. egui runs both on the web and natively on {}{}{}. \
             On the web it is compiled to WebAssembly and rendered with WebGL.{}",
@@ -32,14 +34,19 @@ impl super::View for About {
                 " Everything you see is rendered as textured triangles. There is no DOM, HTML, JS or CSS. Just Rust."
             } else {""}
         ));
+
     ui.label("egui is designed to be easy to use, portable, and fast.");
 
     ui.add_space(12.0); // ui.separator();
+
     ui.heading("Immediate mode");
+
     about_immediate_mode(ui);
 
     ui.add_space(12.0); // ui.separator();
+
     ui.heading("Links");
+
     links(ui);
   }
 }
@@ -50,8 +57,11 @@ fn about_immediate_mode(ui: &mut egui::Ui) {
 
   ui.horizontal_wrapped(|ui| {
             ui.spacing_mut().item_spacing.x = 0.0;
+
             ui.label("Immediate mode is a GUI paradigm that lets you create a GUI with less code and simpler control flow. For example, this is how you create a ");
+
             let _ = ui.small_button("button");
+
             ui.label(" in egui:");
         });
 
@@ -74,8 +84,11 @@ fn about_immediate_mode(ui: &mut egui::Ui) {
 
   ui.horizontal_wrapped(|ui| {
     ui.spacing_mut().item_spacing.x = 0.0;
+
     ui.label("More about immediate mode ");
+
     ui.hyperlink_to("here", "https://github.com/emilk/egui#why-immediate-mode");
+
     ui.label(".");
   });
 }

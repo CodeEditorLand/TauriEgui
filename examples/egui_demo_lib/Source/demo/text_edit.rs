@@ -25,6 +25,7 @@ impl super::Demo for TextEdit {
       .resizable(false)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -50,8 +51,11 @@ impl super::View for TextEdit {
       ui.label("Selected text: ");
       if let Some(text_cursor_range) = output.cursor_range {
         use egui::TextBuffer as _;
+
         let selected_chars = text_cursor_range.as_sorted_char_range();
+
         let selected_text = text.char_range(selected_chars);
+
         ui.code(selected_text);
       }
     });
@@ -71,15 +75,21 @@ impl super::View for TextEdit {
     {
       if let Some(text_cursor_range) = output.cursor_range {
         use egui::TextBuffer as _;
+
         let selected_chars = text_cursor_range.as_sorted_char_range();
+
         let selected_text = text.char_range(selected_chars.clone());
+
         let upper_case = selected_text.to_uppercase();
+
         let new_text = if selected_text == upper_case {
           selected_text.to_lowercase()
         } else {
           upper_case
         };
+
         text.delete_char_range(selected_chars.clone());
+
         text.insert_text(&new_text, selected_chars.start);
       }
     }
@@ -89,6 +99,7 @@ impl super::View for TextEdit {
 
       if ui.button("start").clicked() {
         let text_edit_id = output.response.id;
+
         if let Some(mut state) = egui::TextEdit::load_state(ui.ctx(), text_edit_id) {
           let ccursor = egui::text::CCursor::new(0);
           state.set_ccursor_range(Some(egui::text::CCursorRange::one(ccursor)));
@@ -99,6 +110,7 @@ impl super::View for TextEdit {
 
       if ui.button("end").clicked() {
         let text_edit_id = output.response.id;
+
         if let Some(mut state) = egui::TextEdit::load_state(ui.ctx(), text_edit_id) {
           let ccursor = egui::text::CCursor::new(text.chars().count());
           state.set_ccursor_range(Some(egui::text::CCursorRange::one(ccursor)));

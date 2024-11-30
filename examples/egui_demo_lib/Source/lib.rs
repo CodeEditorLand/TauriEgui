@@ -70,7 +70,9 @@ fn test_egui_e2e() {
     let full_output = ctx.run(raw_input.clone(), |ctx| {
       demo_windows.ui(ctx);
     });
+
     let clipped_primitives = ctx.tessellate(full_output.shapes);
+
     assert!(!clipped_primitives.is_empty());
   }
 }
@@ -89,7 +91,9 @@ fn test_egui_zero_window_size() {
     let full_output = ctx.run(raw_input.clone(), |ctx| {
       demo_windows.ui(ctx);
     });
+
     let clipped_primitives = ctx.tessellate(full_output.shapes);
+
     assert!(
       clipped_primitives.is_empty(),
       "There should be nothing to show"

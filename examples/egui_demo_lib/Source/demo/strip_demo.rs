@@ -18,6 +18,7 @@ impl super::Demo for StripDemo {
       .default_width(400.0)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -26,7 +27,9 @@ impl super::Demo for StripDemo {
 impl super::View for StripDemo {
   fn ui(&mut self, ui: &mut egui::Ui) {
     let dark_mode = ui.visuals().dark_mode;
+
     let faded_color = ui.visuals().window_fill();
+
     let faded_color = |color: Color32| -> Color32 {
       use egui::Rgba;
       let t = if dark_mode { 0.95 } else { 0.8 };
@@ -47,6 +50,7 @@ impl super::View for StripDemo {
           );
           ui.label("width: 100%\nheight: 50px");
         });
+
         strip.strip(|builder| {
           builder.sizes(Size::remainder(), 2).horizontal(|mut strip| {
             strip.cell(|ui| {
@@ -57,9 +61,11 @@ impl super::View for StripDemo {
               );
               ui.label("width: 50%\nheight: remaining");
             });
+
             strip.strip(|builder| {
               builder.sizes(Size::remainder(), 3).vertical(|mut strip| {
                 strip.empty();
+
                 strip.cell(|ui| {
                   ui.painter().rect_filled(
                     ui.available_rect_before_wrap(),
@@ -68,11 +74,13 @@ impl super::View for StripDemo {
                   );
                   ui.label("width: 50%\nheight: 1/3 of the red region");
                 });
+
                 strip.empty();
               });
             });
           });
         });
+
         strip.strip(|builder| {
           builder
             .size(Size::remainder())
@@ -88,6 +96,7 @@ impl super::View for StripDemo {
                   .size(Size::remainder())
                   .vertical(|mut strip| {
                     strip.empty();
+
                     strip.cell(|ui| {
                       ui.painter().rect_filled(
                         ui.available_rect_before_wrap(),
@@ -105,10 +114,12 @@ impl super::View for StripDemo {
                   0.0,
                   faded_color(Color32::GREEN),
                 );
+
                 ui.label("width: 70px\n\nheight: 50%, but at least 60px.");
               });
             });
         });
+
         strip.cell(|ui| {
           ui.vertical_centered(|ui| {
             ui.add(crate::egui_github_link_file!());

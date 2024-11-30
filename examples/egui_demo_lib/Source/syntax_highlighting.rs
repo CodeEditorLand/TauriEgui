@@ -198,7 +198,9 @@ impl CodeTheme {
 impl CodeTheme {
   pub fn dark() -> Self {
     let font_id = egui::FontId::monospace(12.0);
+
     use egui::{Color32, TextFormat};
+
     Self {
       dark_mode: true,
       formats: enum_map::enum_map![
@@ -214,7 +216,9 @@ impl CodeTheme {
 
   pub fn light() -> Self {
     let font_id = egui::FontId::monospace(12.0);
+
     use egui::{Color32, TextFormat};
+
     Self {
       dark_mode: false,
       #[cfg(not(feature = "syntect"))]
@@ -238,10 +242,13 @@ impl CodeTheme {
 
       ui.vertical(|ui| {
         ui.set_width(150.0);
+
         egui::widgets::global_dark_light_mode_buttons(ui);
 
         ui.add_space(8.0);
+
         ui.separator();
+
         ui.add_space(8.0);
 
         ui.scope(|ui| {
@@ -254,8 +261,11 @@ impl CodeTheme {
             // (TokenType::Whitespace, "whitespace"),
           ] {
             let format = &mut self.formats[tt];
+
             ui.style_mut().override_font_id = Some(format.font_id.clone());
+
             ui.visuals_mut().override_text_color = Some(format.color);
+
             ui.radio_value(&mut selected_tt, tt, tt_name);
           }
         });
@@ -333,7 +343,9 @@ impl Highlighter {
 
   fn highlight_impl(&self, theme: &CodeTheme, text: &str, language: &str) -> Option<LayoutJob> {
     use syntect::easy::HighlightLines;
+
     use syntect::highlighting::FontStyle;
+
     use syntect::util::LinesWithEndings;
 
     let syntax = self
@@ -342,6 +354,7 @@ impl Highlighter {
       .or_else(|| self.ps.find_syntax_by_extension(language))?;
 
     let theme = theme.syntect_theme.syntect_key_name();
+
     let mut h = HighlightLines::new(syntax, &self.ts.themes[theme]);
 
     use egui::text::{LayoutSection, TextFormat};
@@ -354,14 +367,19 @@ impl Highlighter {
     for line in LinesWithEndings::from(text) {
       for (style, range) in h.highlight_line(line, &self.ps).ok()? {
         let fg = style.foreground;
+
         let text_color = egui::Color32::from_rgb(fg.r, fg.g, fg.b);
+
         let italics = style.font_style.contains(FontStyle::ITALIC);
+
         let underline = style.font_style.contains(FontStyle::ITALIC);
+
         let underline = if underline {
           egui::Stroke::new(1.0, text_color)
         } else {
           egui::Stroke::none()
         };
+
         job.sections.push(LayoutSection {
           leading_space: 0.0,
           byte_range: as_byte_range(text, range),
@@ -407,7 +425,9 @@ impl Highlighter {
     while !text.is_empty() {
       if text.starts_with("//") {
         let end = text.find('\n').unwrap_or(text.len());
+
         job.append(&text[..end], 0.0, theme.formats[TokenType::Comment].clone());
+
         text = &text[end..];
       } else if text.starts_with('"') {
         let end = text[1..]
@@ -415,43 +435,55 @@ impl Highlighter {
           .map(|i| i + 2)
           .or_else(|| text.find('\n'))
           .unwrap_or(text.len());
+
         job.append(
           &text[..end],
           0.0,
           theme.formats[TokenType::StringLiteral].clone(),
         );
+
         text = &text[end..];
       } else if text.starts_with(|c: char| c.is_ascii_alphanumeric()) {
         let end = text[1..]
           .find(|c: char| !c.is_ascii_alphanumeric())
           .map_or_else(|| text.len(), |i| i + 1);
+
         let word = &text[..end];
+
         let tt = if is_keyword(word) {
           TokenType::Keyword
         } else {
           TokenType::Literal
         };
+
         job.append(word, 0.0, theme.formats[tt].clone());
+
         text = &text[end..];
       } else if text.starts_with(|c: char| c.is_ascii_whitespace()) {
         let end = text[1..]
           .find(|c: char| !c.is_ascii_whitespace())
           .map_or_else(|| text.len(), |i| i + 1);
+
         job.append(
           &text[..end],
           0.0,
           theme.formats[TokenType::Whitespace].clone(),
         );
+
         text = &text[end..];
       } else {
         let mut it = text.char_indices();
+
         it.next();
+
         let end = it.next().map_or(text.len(), |(idx, _chr)| idx);
+
         job.append(
           &text[..end],
           0.0,
           theme.formats[TokenType::Punctuation].clone(),
         );
+
         text = &text[end..];
       }
     }

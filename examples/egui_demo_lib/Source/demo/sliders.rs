@@ -46,6 +46,7 @@ impl super::Demo for Sliders {
       .resizable(false)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -86,6 +87,7 @@ impl super::View for Sliders {
     };
 
     let istep = if *use_steps { *step } else { 0.0 };
+
     if *integer {
       let mut value_i32 = *value as i32;
       ui.add(
@@ -122,12 +124,14 @@ impl super::View for Sliders {
     ui.separator();
 
     ui.label("Slider range:");
+
     ui.add(
       Slider::new(min, type_min..=type_max)
         .logarithmic(true)
         .smart_aim(*smart_aim)
         .text("left"),
     );
+
     ui.add(
       Slider::new(max, type_min..=type_max)
         .logarithmic(true)
@@ -138,7 +142,9 @@ impl super::View for Sliders {
     ui.separator();
 
     ui.checkbox(use_steps, "Use steps");
+
     ui.label("When enabled, the minimal value change would be restricted to a given step.");
+
     if *use_steps {
       ui.add(egui::DragValue::new(step).speed(1.0));
     }
@@ -158,20 +164,29 @@ impl super::View for Sliders {
       ui.radio_value(vertical, false, "Horizontal");
       ui.radio_value(vertical, true, "Vertical");
     });
+
     ui.add_space(8.0);
 
     ui.checkbox(logarithmic, "Logarithmic");
+
     ui.label("Logarithmic sliders are great for when you want to span a huge range, i.e. from zero to a million.");
+
     ui.label("Logarithmic sliders can include infinity and zero.");
+
     ui.add_space(8.0);
 
     ui.checkbox(clamp_to_range, "Clamp to range");
+
     ui.label("If true, the slider will clamp incoming and outgoing values to the given range.");
+
     ui.label("If false, the slider can shows values outside its range, and you can manually enter values outside the range.");
+
     ui.add_space(8.0);
 
     ui.checkbox(smart_aim, "Smart Aim");
+
     ui.label("Smart Aim will guide you towards round values when you drag the slider so you you are more likely to hit 250 than 247.23");
+
     ui.add_space(8.0);
 
     ui.vertical_centered(|ui| {

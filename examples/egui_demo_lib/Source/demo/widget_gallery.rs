@@ -56,6 +56,7 @@ impl super::Demo for WidgetGallery {
       .default_width(280.0)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -90,7 +91,9 @@ impl super::View for WidgetGallery {
 
     ui.vertical_centered(|ui| {
             let tooltip_text = "The full egui documentation.\nYou can also click the different widgets names in the left column.";
+
             ui.hyperlink("https://docs.rs/egui/").on_hover_text(tooltip_text);
+
             ui.add(crate::egui_github_link_file!(
                 "Source code of the widget gallery"
             ));
@@ -123,54 +126,71 @@ impl WidgetGallery {
     });
 
     ui.add(doc_link_label("Label", "label,heading"));
+
     ui.label("Welcome to the widget gallery!");
+
     ui.end_row();
 
     ui.add(doc_link_label("Hyperlink", "Hyperlink"));
+
     use egui::special_emojis::GITHUB;
+
     ui.hyperlink_to(
       format!("{} egui on GitHub", GITHUB),
       "https://github.com/emilk/egui",
     );
+
     ui.end_row();
 
     ui.add(doc_link_label("TextEdit", "TextEdit,text_edit"));
+
     ui.add(egui::TextEdit::singleline(string).hint_text("Write something here"));
+
     ui.end_row();
 
     ui.add(doc_link_label("Button", "button"));
+
     if ui.button("Click me!").clicked() {
       *boolean = !*boolean;
     }
+
     ui.end_row();
 
     ui.add(doc_link_label("Link", "link"));
+
     if ui.link("Click me!").clicked() {
       *boolean = !*boolean;
     }
+
     ui.end_row();
 
     ui.add(doc_link_label("Checkbox", "checkbox"));
+
     ui.checkbox(boolean, "Checkbox");
+
     ui.end_row();
 
     ui.add(doc_link_label("RadioButton", "radio"));
+
     ui.horizontal(|ui| {
       ui.radio_value(radio, Enum::First, "First");
       ui.radio_value(radio, Enum::Second, "Second");
       ui.radio_value(radio, Enum::Third, "Third");
     });
+
     ui.end_row();
 
     ui.add(doc_link_label(
       "SelectableLabel",
       "selectable_value,SelectableLabel",
     ));
+
     ui.horizontal(|ui| {
       ui.selectable_value(radio, Enum::First, "First");
       ui.selectable_value(radio, Enum::Second, "Second");
       ui.selectable_value(radio, Enum::Third, "Third");
     });
+
     ui.end_row();
 
     ui.add(doc_link_label("ComboBox", "ComboBox"));
@@ -179,21 +199,30 @@ impl WidgetGallery {
       .selected_text(format!("{:?}", radio))
       .show_ui(ui, |ui| {
         ui.selectable_value(radio, Enum::First, "First");
+
         ui.selectable_value(radio, Enum::Second, "Second");
+
         ui.selectable_value(radio, Enum::Third, "Third");
       });
+
     ui.end_row();
 
     ui.add(doc_link_label("Slider", "Slider"));
+
     ui.add(egui::Slider::new(scalar, 0.0..=360.0).suffix("°"));
+
     ui.end_row();
 
     ui.add(doc_link_label("DragValue", "DragValue"));
+
     ui.add(egui::DragValue::new(scalar).speed(1.0));
+
     ui.end_row();
 
     ui.add(doc_link_label("ProgressBar", "ProgressBar"));
+
     let progress = *scalar / 360.0;
+
     let progress_bar = egui::ProgressBar::new(progress)
       .show_percentage()
       .animate(*animate_progress_bar);
@@ -201,22 +230,29 @@ impl WidgetGallery {
       .add(progress_bar)
       .on_hover_text("The progress bar can be animated!")
       .hovered();
+
     ui.end_row();
 
     ui.add(doc_link_label("Color picker", "color_edit"));
+
     ui.color_edit_button_srgba(color);
+
     ui.end_row();
 
     let img_size = 16.0 * texture.size_vec2() / texture.size_vec2().y;
 
     ui.add(doc_link_label("Image", "Image"));
+
     ui.image(texture, img_size);
+
     ui.end_row();
 
     ui.add(doc_link_label("ImageButton", "ImageButton"));
+
     if ui.add(egui::ImageButton::new(texture, img_size)).clicked() {
       *boolean = !*boolean;
     }
+
     ui.end_row();
 
     #[cfg(feature = "chrono")]
@@ -228,33 +264,45 @@ impl WidgetGallery {
     }
 
     ui.add(doc_link_label("Separator", "separator"));
+
     ui.separator();
+
     ui.end_row();
 
     ui.add(doc_link_label("CollapsingHeader", "collapsing"));
+
     ui.collapsing("Click to see what is hidden!", |ui| {
       ui.horizontal_wrapped(|ui| {
         ui.spacing_mut().item_spacing.x = 0.0;
+
         ui.label("It's a ");
+
         ui.add(doc_link_label("Spinner", "spinner"));
+
         ui.add_space(4.0);
+
         ui.add(egui::Spinner::new());
       });
     });
+
     ui.end_row();
 
     ui.add(doc_link_label("Plot", "plot"));
+
     example_plot(ui);
+
     ui.end_row();
 
     ui.hyperlink_to(
       "Custom widget:",
       super::toggle_switch::url_to_file_source_code(),
     );
+
     ui.add(super::toggle_switch::toggle(boolean)).on_hover_text(
       "It's easy to create your own widgets!\n\
             This toggle switch is just 15 lines of code.",
     );
+
     ui.end_row();
   }
 }
@@ -284,6 +332,7 @@ fn doc_link_label<'a>(title: &'a str, search_term: &'a str) -> impl egui::Widget
     ui.hyperlink_to(label, url).on_hover_ui(|ui| {
       ui.horizontal_wrapped(|ui| {
         ui.label("Search egui docs for");
+
         ui.code(search_term);
       });
     })

@@ -12,6 +12,7 @@ impl super::Demo for DancingStrings {
 
   fn show(&mut self, ctx: &Context, open: &mut bool) {
     use super::View as _;
+
     Window::new(self.name())
       .open(open)
       .default_size(vec2(512.0, 256.0))
@@ -42,24 +43,31 @@ impl super::View for DancingStrings {
 
       for &mode in &[2, 3, 5] {
         let mode = mode as f64;
+
         let n = 120;
+
         let speed = 1.5;
 
         let points: Vec<Pos2> = (0..=n)
           .map(|i| {
             let t = i as f64 / (n as f64);
+
             let amp = (time * speed * mode).sin() / mode;
+
             let y = amp * (t * std::f64::consts::TAU / 2.0 * mode).sin();
+
             to_screen * pos2(t as f32, y as f32)
           })
           .collect();
 
         let thickness = 10.0 / mode as f32;
+
         shapes.push(epaint::Shape::line(points, Stroke::new(thickness, color)));
       }
 
       ui.painter().extend(shapes);
     });
+
     ui.vertical_centered(|ui| {
       ui.add(crate::egui_github_link_file!());
     });

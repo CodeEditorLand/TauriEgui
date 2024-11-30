@@ -60,6 +60,7 @@ impl super::View for IdTest {
     ui.collapsing("Collapsing header", |ui| {
       ui.label("Contents of first foldable ui");
     });
+
     ui.collapsing("Collapsing header", |ui| {
       ui.label("Contents of second foldable ui");
     });
@@ -73,7 +74,9 @@ impl super::View for IdTest {
             (and if it is, the window will have a new layout, and the slider will endup somewhere else, and so aborthing the interaction probably makes sense).");
 
     ui.label("So these buttons have automatic Id:s, and therefore there is no name clash:");
+
     let _ = ui.button("Button");
+
     let _ = ui.button("Button");
 
     ui.vertical_centered(|ui| {
@@ -121,6 +124,7 @@ impl super::Demo for ManualLayoutTest {
       .open(open)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -136,12 +140,14 @@ impl super::View for ManualLayoutTest {
       widget_type,
       text_edit_contents,
     } = self;
+
     ui.horizontal(|ui| {
       ui.label("Test widget:");
       ui.radio_value(widget_type, WidgetType::Button, "Button");
       ui.radio_value(widget_type, WidgetType::Label, "Label");
       ui.radio_value(widget_type, WidgetType::TextEdit, "TextEdit");
     });
+
     egui::Grid::new("pos_size").show(ui, |ui| {
       ui.label("Widget position:");
       ui.add(egui::Slider::new(&mut widget_offset.x, 0.0..=400.0));
@@ -212,8 +218,11 @@ impl super::Demo for TableTest {
 impl super::View for TableTest {
   fn ui(&mut self, ui: &mut egui::Ui) {
     ui.add(egui::Slider::new(&mut self.min_col_width, 0.0..=400.0).text("Minimum column width"));
+
     ui.add(egui::Slider::new(&mut self.max_col_width, 0.0..=400.0).text("Maximum column width"));
+
     ui.add(egui::Slider::new(&mut self.num_cols, 0..=5).text("Columns"));
+
     ui.add(egui::Slider::new(&mut self.num_rows, 0..=20).text("Rows"));
 
     ui.separator();
@@ -238,6 +247,7 @@ impl super::View for TableTest {
               let mut string = String::new();
               for word in words.iter().cycle().skip(word_idx).take(word_count) {
                 string += word;
+
                 string += " ";
               }
               ui.label(string);
@@ -248,10 +258,13 @@ impl super::View for TableTest {
       });
 
     ui.separator();
+
     ui.add(egui::Slider::new(&mut self.text_length, 1..=40).text("Text length"));
+
     egui::Grid::new("parent grid").striped(true).show(ui, |ui| {
       ui.vertical(|ui| {
         ui.label("Vertical nest1");
+
         ui.label("Vertical nest2");
       });
       ui.label("First row, second column");
@@ -259,6 +272,7 @@ impl super::View for TableTest {
 
       ui.horizontal(|ui| {
         ui.label("Horizontal nest1");
+
         ui.label("Horizontal nest2");
       });
       ui.label("Second row, second column");
@@ -266,6 +280,7 @@ impl super::View for TableTest {
 
       ui.scope(|ui| {
         ui.label("Scope nest 1");
+
         ui.label("Scope nest 2");
       });
       ui.label("Third row, second column");
@@ -273,10 +288,15 @@ impl super::View for TableTest {
 
       egui::Grid::new("nested grid").show(ui, |ui| {
         ui.label("Grid nest11");
+
         ui.label("Grid nest12");
+
         ui.end_row();
+
         ui.label("Grid nest21");
+
         ui.label("Grid nest22");
+
         ui.end_row();
       });
       ui.label("Fourth row, second column");
@@ -315,6 +335,7 @@ impl super::Demo for InputTest {
       .resizable(false)
       .show(ctx, |ui| {
         use super::View as _;
+
         self.ui(ui);
       });
   }
@@ -332,6 +353,7 @@ impl super::View for InputTest {
     );
 
     let mut new_info = String::new();
+
     for &button in &[
       egui::PointerButton::Primary,
       egui::PointerButton::Secondary,
@@ -360,6 +382,7 @@ impl super::View for InputTest {
         .ok();
       }
     }
+
     if !new_info.is_empty() {
       self.info = new_info;
     }
@@ -395,10 +418,13 @@ impl super::Demo for WindowResizeTest {
       .auto_sized()
       .show(ctx, |ui| {
         ui.label("This window will auto-size based on its contents.");
+
         ui.heading("Resize this area:");
+
         Resize::default().show(ui, |ui| {
           lorem_ipsum(ui, crate::LOREM_IPSUM);
         });
+
         ui.heading("Resize the above area!");
       });
 
@@ -409,7 +435,9 @@ impl super::Demo for WindowResizeTest {
       .default_height(300.0)
       .show(ctx, |ui| {
         ui.label("This window is resizable and has a scroll area. You can shrink it to any size.");
+
         ui.separator();
+
         lorem_ipsum(ui, crate::LOREM_IPSUM_LONG);
       });
 
@@ -420,8 +448,11 @@ impl super::Demo for WindowResizeTest {
       .default_height(300.0)
       .show(ctx, |ui| {
         ui.label("This window is resizable but has no built-in scroll area.");
+
         ui.label("However, we have a sub-region with a scroll bar:");
+
         ui.separator();
+
         ScrollArea::vertical().show(ui, |ui| {
           let lorem_ipsum_extra_long =
             format!("{}\n\n{}", crate::LOREM_IPSUM_LONG, crate::LOREM_IPSUM_LONG);
@@ -436,8 +467,11 @@ impl super::Demo for WindowResizeTest {
             .resizable(true)
             .show(ctx, |ui| {
                 ui.label("This window is resizable but has no scroll area. This means it can only be resized to a size where all the contents is visible.");
+
                 ui.label("egui will not clip the contents of a window, nor add whitespace to it.");
+
                 ui.separator();
+
                 lorem_ipsum(ui, crate::LOREM_IPSUM);
             });
 
@@ -448,6 +482,7 @@ impl super::Demo for WindowResizeTest {
       .default_height(300.0)
       .show(ctx, |ui| {
         ui.label("Shows how you can fill an area with a widget.");
+
         ui.add_sized(ui.available_size(), TextEdit::multiline(&mut self.text));
       });
 
@@ -460,6 +495,7 @@ impl super::Demo for WindowResizeTest {
         ui.label(
           "This window has empty space that fills up the available space, preventing auto-shrink.",
         );
+
         ui.allocate_space(ui.available_size());
       });
   }

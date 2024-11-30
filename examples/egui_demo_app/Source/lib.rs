@@ -35,6 +35,7 @@ impl WebHandle {
   #[cfg(target_arch = "wasm32")]
   pub fn stop_web(&self) -> Result<(), wasm_bindgen::JsValue> {
     let mut app = self.handle.lock();
+
     let res = app.destroy();
 
     // let numw = Arc::weak_count(&app);

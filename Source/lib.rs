@@ -50,7 +50,9 @@ impl<T:UserEvent, R:Runtime> PluginBuilder<T> for EguiPluginBuilder<R> {
 			create_window_channel:sync_channel(1),
 			is_focused:false,
 		};
+
 		self.app.manage(plugin.handle());
+
 		plugin
 	}
 }

@@ -51,11 +51,13 @@ impl super::Demo for WindowOptions {
     } = self.clone();
 
     let enabled = ctx.input().time - disabled_time > 2.0;
+
     if !enabled {
       ctx.request_repaint();
     }
 
     use super::View as _;
+
     let mut window = egui::Window::new(title)
       .id(egui::Id::new("demo_window_options")) // required since we change the title
       .resizable(resizable)
@@ -63,12 +65,15 @@ impl super::Demo for WindowOptions {
       .title_bar(title_bar)
       .scroll2(scroll2)
       .enabled(enabled);
+
     if closable {
       window = window.open(open);
     }
+
     if anchored {
       window = window.anchor(anchor, anchor_offset);
     }
+
     window.show(ctx, |ui| self.ui(ui));
   }
 }
@@ -87,6 +92,7 @@ impl super::View for WindowOptions {
       anchor,
       anchor_offset,
     } = self;
+
     ui.horizontal(|ui| {
       ui.label("title:");
       ui.text_edit_singleline(title);
@@ -109,19 +115,27 @@ impl super::View for WindowOptions {
           ui.set_enabled(*anchored);
           ui.horizontal(|ui| {
             ui.label("x:");
+
             ui.selectable_value(&mut anchor[0], egui::Align::LEFT, "Left");
+
             ui.selectable_value(&mut anchor[0], egui::Align::Center, "Center");
+
             ui.selectable_value(&mut anchor[0], egui::Align::RIGHT, "Right");
           });
           ui.horizontal(|ui| {
             ui.label("y:");
+
             ui.selectable_value(&mut anchor[1], egui::Align::TOP, "Top");
+
             ui.selectable_value(&mut anchor[1], egui::Align::Center, "Center");
+
             ui.selectable_value(&mut anchor[1], egui::Align::BOTTOM, "Bottom");
           });
           ui.horizontal(|ui| {
             ui.label("Offset:");
+
             ui.add(egui::DragValue::new(&mut anchor_offset.x));
+
             ui.add(egui::DragValue::new(&mut anchor_offset.y));
           });
         });

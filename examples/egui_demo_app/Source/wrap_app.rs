@@ -64,8 +64,10 @@ impl eframe::App for ColorTestApp {
                 ui.label(
                     "NOTE: Some old browsers stuck on WebGL1 without sRGB support will not pass the color test.",
                 );
+
                 ui.separator();
             }
+
             egui::ScrollArea::both().auto_shrink([false; 2]).show(ui, |ui| {
                 self.color_test.ui(ui);
             });
@@ -192,6 +194,7 @@ impl eframe::App for WrapApp {
       egui::trace!(ui);
       ui.horizontal_wrapped(|ui| {
         ui.visuals_mut().button_frame = false;
+
         self.bar_contents(ui, frame);
       });
     });
@@ -237,12 +240,14 @@ impl WrapApp {
         .clicked()
       {
         *ui.ctx().memory() = Default::default();
+
         ui.close_menu();
       }
 
       if ui.button("Reset everything").clicked() {
         self.state = Default::default();
         *ui.ctx().memory() = Default::default();
+
         ui.close_menu();
       }
     });
@@ -250,13 +255,17 @@ impl WrapApp {
 
   fn show_selected_app(&mut self, ctx: &egui::Context, frame: &mut eframe::Frame) {
     let mut found_anchor = false;
+
     let selected_anchor = self.state.selected_anchor.clone();
+
     for (_name, anchor, app) in self.apps_iter_mut() {
       if anchor == selected_anchor || ctx.memory().everything_is_visible() {
         app.update(ctx, frame);
+
         found_anchor = true;
       }
     }
+
     if !found_anchor {
       self.state.selected_anchor = "demo".into();
     }
@@ -279,17 +288,20 @@ impl WrapApp {
     ui.separator();
 
     let mut selected_anchor = self.state.selected_anchor.clone();
+
     for (name, anchor, _app) in self.apps_iter_mut() {
       if ui
         .selectable_label(selected_anchor == anchor, name)
         .clicked()
       {
         selected_anchor = anchor.to_owned();
+
         if frame.is_web() {
           ui.output().open_url(format!("#{}", anchor));
         }
       }
     }
+
     self.state.selected_anchor = selected_anchor;
 
     ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
@@ -309,6 +321,7 @@ impl WrapApp {
 
   fn ui_file_drag_and_drop(&mut self, ctx: &egui::Context) {
     use egui::*;
+
     use std::fmt::Write as _;
 
     // Preview hovering files:
@@ -356,9 +369,11 @@ impl WrapApp {
             } else {
               "???".to_owned()
             };
+
             if let Some(bytes) = &file.bytes {
               write!(info, " ({} bytes)", bytes.len()).ok();
             }
+
             ui.label(info);
           }
         });

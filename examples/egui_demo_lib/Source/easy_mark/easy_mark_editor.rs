@@ -51,6 +51,7 @@ impl EasyMarkEditor {
       egui::reset_button(ui, self);
       ui.end_row();
     });
+
     ui.separator();
 
     if self.show_rendered {
@@ -58,6 +59,7 @@ impl EasyMarkEditor {
         ScrollArea::vertical()
           .id_source("source")
           .show(&mut columns[0], |ui| self.editor_ui(ui));
+
         ScrollArea::vertical()
           .id_source("rendered")
           .show(&mut columns[1], |ui| {
@@ -80,7 +82,9 @@ impl EasyMarkEditor {
     let response = if self.highlight_editor {
       let mut layouter = |ui: &egui::Ui, easymark: &str, wrap_width: f32| {
         let mut layout_job = highlighter.highlight(ui.style(), easymark);
+
         layout_job.wrap.max_width = wrap_width;
+
         ui.fonts().layout_job(layout_job)
       };
 
@@ -97,6 +101,7 @@ impl EasyMarkEditor {
     if let Some(mut state) = TextEdit::load_state(ui.ctx(), response.id) {
       if let Some(mut ccursor_range) = state.ccursor_range() {
         let any_change = shortcuts(ui, code, &mut ccursor_range);
+
         if any_change {
           state.set_ccursor_range(Some(ccursor_range));
           state.store(ui.ctx(), response.id);
@@ -125,10 +130,13 @@ fn shortcuts(ui: &Ui, code: &mut dyn TextBuffer, ccursor_range: &mut CCursorRang
   {
     // This is a placeholder till we can indent the active line
     any_change = true;
+
     let [primary, _secondary] = ccursor_range.sorted();
 
     let advance = code.insert_text("  ", primary.index);
+
     ccursor_range.primary.index += advance;
+
     ccursor_range.secondary.index += advance;
   }
   for (modifier, key, surrounding) in [
@@ -165,14 +173,19 @@ fn toggle_surrounding(
 
   if already_surrounded {
     code.delete_char_range(suffix_crange);
+
     code.delete_char_range(prefix_crange);
+
     ccursor_range.primary.index -= surrounding_ccount;
+
     ccursor_range.secondary.index -= surrounding_ccount;
   } else {
     code.insert_text(surrounding, secondary.index);
+
     let advance = code.insert_text(surrounding, primary.index);
 
     ccursor_range.primary.index += advance;
+
     ccursor_range.secondary.index += advance;
   }
 }
