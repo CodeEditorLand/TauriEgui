@@ -9,17 +9,17 @@ categories = ["gui", "tauri"]
 description = "A Tauri plugin for the egui library"
 
 [dependencies]
-thiserror = "1"
-tauri = "2.0.0-alpha.4"
+thiserror = { version = "1" }
+tauri = { version = "2.0.0-alpha.4" }
 tauri-runtime = "0.13.0-alpha.2"
 tauri-runtime-wry = "0.13.0-alpha.2"
-egui = "0.19"
+egui = { version = "0.19" }
 eframe = { package = "eframe_tao", version = "0.22.0" }
 egui-winit = { package = "egui-tao", version = "0.22.0" }
 egui_glow = { package = "egui_glow_tao", version = "0.22.0" }
 glutin = { package = "glutin_tao", version = "0.32.0" }
-glow = "0.11"
-rand = "0.8"
+glow = { version = "0.11" }
+rand = { version = "0.8" }
 raw-window-handle = "0.5"
 
 [dev-dependencies]
