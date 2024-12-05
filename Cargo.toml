@@ -2,7 +2,7 @@
 name = "tauri-egui"
 version = "0.3.0"
 edition = "2021"
-license = "Apache-2.0 OR MIT"
+license-file = "LICENSE"
 readme = "README.md"
 homepage = "https://tauri.app"
 categories = ["gui", "tauri"]
