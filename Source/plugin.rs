@@ -8,27 +8,20 @@ use std::{
 	ops::Deref,
 	rc::Rc,
 	sync::{
-		mpsc::{channel, Receiver, Sender, SyncSender},
 		Arc,
 		Mutex,
+		mpsc::{Receiver, Sender, SyncSender, channel},
 	},
 };
 
 use eframe::CreationContext;
 use raw_window_handle::HasRawWindowHandle;
-use tauri_runtime::{window::WindowEvent, RunEvent, UserEvent};
+use tauri_runtime::{RunEvent, UserEvent, window::WindowEvent};
 #[cfg(target_os = "linux")]
 use tauri_runtime_wry::wry::application::platform::unix::WindowExtUnix;
 #[cfg(windows)]
 use tauri_runtime_wry::wry::application::platform::windows::WindowExtWindows;
 use tauri_runtime_wry::{
-	center_window,
-	wry::application::{
-		event::{Event, WindowEvent as TaoWindowEvent},
-		event_loop::{ControlFlow, EventLoopProxy, EventLoopWindowTarget},
-		menu::CustomMenuItem,
-		window::Fullscreen,
-	},
 	Context as WryContext,
 	CursorIconWrapper,
 	EventLoopIterationContext,
@@ -46,6 +39,13 @@ use tauri_runtime_wry::{
 	WindowId,
 	WindowMenuEventListeners,
 	WindowMessage,
+	center_window,
+	wry::application::{
+		event::{Event, WindowEvent as TaoWindowEvent},
+		event_loop::{ControlFlow, EventLoopProxy, EventLoopWindowTarget},
+		menu::CustomMenuItem,
+		window::Fullscreen,
+	},
 };
 
 use crate::{Error, Result};
