@@ -6,7 +6,7 @@ description = "Example library for egui"
 edition = "2021"
 rust-version = "1.61"
 homepage = "https://github.com/emilk/egui/tree/master/crates/egui_demo_lib"
-license-file = "LICENSE"
+license = "MIT OR Apache-2.0"
 readme = "README.md"
 repository = "https://github.com/emilk/egui/tree/master/crates/egui_demo_lib"
 categories = ["gui", "graphics"]
@@ -18,6 +18,7 @@ all-features = true
 
 [lib]
 
+
 [features]
 default = []
 
@@ -26,6 +27,7 @@ chrono = ["egui_extras/datepicker", "dep:chrono"]
 serde = ["egui/serde", "dep:serde"]
 ## Enable better syntax highlighting using [`syntect`](https://docs.rs/syntect).
 syntax_highlighting = ["syntect"]
+
 
 [dependencies]
 egui = { version = "0.19.0", default-features = false }
@@ -39,12 +41,12 @@ chrono = { version = "0.4", optional = true, features = ["js-sys", "wasmbind"] }
 ## Enable this when generating docs.
 document-features = { version = "0.2", optional = true }
 serde = { version = "1", optional = true, features = ["derive"] }
-syntect = { version = "5", optional = true, default-features = false, features = [
-	"default-fancy",
-] }
+syntect = { version = "5", optional = true, default-features = false, features = ["default-fancy"] }
+
 
 [dev-dependencies]
 criterion = { version = "0.3", default-features = false }
+
 
 [[bench]]
 name = "benchmark"
