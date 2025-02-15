@@ -1,37 +1,41 @@
-[package]
-name = "tauri-egui"
-version = "0.3.0"
-edition = "2021"
-license-file = "LICENSE"
-readme = "README.md"
-homepage = "https://tauri.app"
-categories = ["gui", "tauri"]
-description = "A Tauri plugin for the egui library"
-
 [dependencies]
-thiserror = { version = "1" }
+eframe = { package = "eframe_tao", version = "0.22.0" }
+egui = { version = "0.19" }
+egui-winit = { package = "egui-tao", version = "0.22.0" }
+egui_glow = { package = "egui_glow_tao", version = "0.22.0" }
+glow = { version = "0.11" }
+glutin = { package = "glutin_tao", version = "0.32.0" }
+rand = { version = "0.8" }
+raw-window-handle = "0.5"
 tauri = { version = "2.0.0-alpha.4" }
 tauri-runtime = "0.13.0-alpha.2"
 tauri-runtime-wry = "0.13.0-alpha.2"
-egui = { version = "0.19" }
-eframe = { package = "eframe_tao", version = "0.22.0" }
-egui-winit = { package = "egui-tao", version = "0.22.0" }
-egui_glow = { package = "egui_glow_tao", version = "0.22.0" }
-glutin = { package = "glutin_tao", version = "0.32.0" }
-glow = { version = "0.11" }
-rand = { version = "0.8" }
-raw-window-handle = "0.5"
+thiserror = { version = "1" }
 
 [dev-dependencies]
-tauri = { version = "2.0.0-alpha.4" }
 egui_demo_app = { path = "examples/egui_demo_app" }
-
-[target."cfg(any(target_os = \"linux\", target_os = \"dragonfly\", target_os = \"freebsd\", target_os = \"openbsd\", target_os = \"netbsd\"))".dependencies]
-gtk = { version = "0.16", features = ["v3_24"] }
+tauri = { version = "2.0.0-alpha.4" }
 
 [[example]]
 name = "demo"
 path = "examples/demo/main.rs"
+
+[package]
+categories = ["gui", "tauri"]
+description = "A Tauri plugin for the egui library"
+edition = "2021"
+homepage = "https://tauri.app"
+license-file = "LICENSE"
+name = "tauri-egui"
+readme = "README.md"
+version = "0.3.0"
+
+[target]
+
+[target.'cfg(any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd", target_os = "netbsd"))']
+
+[target.'cfg(any(target_os = "linux", target_os = "dragonfly", target_os = "freebsd", target_os = "openbsd", target_os = "netbsd"))'.dependencies]
+gtk = { version = "0.16", features = ["v3_24"] }
 
 [workspace]
 members = ["examples/egui_demo_app", "examples/egui_demo_lib"]
