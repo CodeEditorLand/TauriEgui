@@ -23,7 +23,7 @@ path = "examples/demo/main.rs"
 [package]
 categories = ["gui", "tauri"]
 description = "A Tauri plugin for the egui library"
-edition = "2021"
+edition = "2024"
 homepage = "https://tauri.app"
 license-file = "LICENSE"
 name = "tauri-egui"

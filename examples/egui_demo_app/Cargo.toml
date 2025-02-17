@@ -1,5 +1,5 @@
 [[bin]]
-name = "egui_demo_app"
+name = "tauri_egui_demo_app"
 path = "Source/main.rs"
 
 [dependencies]
@@ -37,12 +37,12 @@ path = "Source/lib.rs"
 
 [package]
 authors = ["Emil Ernerfeldt <emil.ernerfeldt@gmail.com>"]
-default-run = "egui_demo_app"
-edition = "2021"
+default-run = "tauri_egui_demo_app"
+edition = "2024"
 license-file = "LICENSE"
-name = "egui_demo_app"
+name = "tauri_egui_demo_app"
 publish = false
-rust-version = "1.61"
+rust-version = "1.85.0"
 version = "0.19.0"
 
 [package.metadata]
